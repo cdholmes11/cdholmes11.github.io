@@ -1,0 +1,860 @@
+# Libraries
+```{r}
+library(tidyverse)
+library(magrittr)
+library(dplyr)
+library(plotly)
+library(class)
+library(e1071)
+library(psych)
+library(randomForest)
+library(caret)
+library(fastDummies)
+library(recipes)
+library(GGally)
+library(aod)
+```
+
+# YouTube Link
+https://www.youtube.com/watch?v=yoGmXTMErUk&ab_channel=DaneHolmes
+
+# Data Import/Transformation
+```{r}
+# Source
+case_study_df <- read.csv("C:/Users/corey/OneDrive/Documents/GitHub/DDS-Project-2/Data Sources/CaseStudy2-data.csv", header = TRUE) # nolint
+str(case_study_df)
+
+# Seed
+set.seed(100)
+
+# Additional columns
+## Mean Monthly Income by Job Role
+job_role_income <-
+    case_study_df %>%
+    group_by(JobRole) %>%
+    summarise(mean_income_role = mean(MonthlyIncome))
+
+## Mean Monthly Income by Job Level
+job_level_income <-
+    case_study_df %>%
+    group_by(JobLevel) %>%
+    summarise(mean_income_level = mean(MonthlyIncome))
+
+# Merge columns into main data frame
+case_study_df <- left_join(case_study_df, job_role_income)
+case_study_df <- left_join(case_study_df, job_level_income)
+
+# Create columns to calculate difference from mean and clean data
+case_study_df <-
+    case_study_df %>%
+    mutate(income_dif_role = MonthlyIncome - mean_income_role,
+        income_dif_level = MonthlyIncome - mean_income_level,
+        JobRole = str_replace_all(JobRole, "[^[:alnum:]]", ""),
+        Department = str_replace_all(Department, "[^[:alnum:]]", ""),
+        EducationField = str_replace_all(EducationField, "[^[:alnum:]]", ""),
+        BusinessTravel = str_replace_all(BusinessTravel, "[^[:alnum:]]", "")
+    )
+
+# Remove columns irrelevant to model or that have collinearity
+case_df_trim <-
+    subset(case_study_df,
+        select = -c(
+            ID, Over18, EmployeeCount, EmployeeNumber,
+            StandardHours, mean_income_role, mean_income_level
+        )
+    )
+
+# Producing dummy columns for categorical variables
+dummy_df <-
+    dummy_cols(
+        case_df_trim,
+        c("Attrition", "BusinessTravel", "Department", "EducationField",
+            "Gender", "JobRole", "MaritalStatus", "OverTime"),
+        remove_selected_columns = TRUE
+    )
+# Removing No Option from Attrition and Overtime for multicollinearity
+dummy_df <-
+    subset(dummy_df,
+        select = -c(Attrition_No, OverTime_No)
+    )
+# Creating data frame with dummy columns that keep original Attrition column
+dummy_df_attrition <-
+    dummy_cols(
+        case_df_trim,
+        c("BusinessTravel", "Department", "EducationField",
+            "Gender", "JobRole", "MaritalStatus", "OverTime"),
+        remove_selected_columns = TRUE
+    )
+
+dummy_df_attrition <-
+    subset(dummy_df_attrition,
+        select = -c(OverTime_No)
+    )
+```
+
+# EDA
+```{r}
+# Attrition
+## Logistical Regression best p-values
+attrition_df <- dummy_df
+
+## Obtaining P-Value for Attrition
+log_reg <- glm(Attrition_Yes ~ ., data = attrition_df, family = "binomial")
+anova(log_reg, test = "Chisq")
+
+## Data frame of P-Values
+attr_pvalue_df <- rownames_to_column(as.data.frame(anova(log_reg, test = "Chisq")))[, c(1, 6)] #nolint
+colnames(attr_pvalue_df) <- c("column_name", "p_value")
+
+## P-Values less than .05
+attr_pvalue_df %>%
+    filter(attr_pvalue_df$column_name != "(Intercept)" & .05 - p_value > 0) %>%
+    ggplot(aes(x = reorder(column_name, p_value), y = p_value)) +
+    geom_bar(stat = "identity", fill = "#00002c") +
+    ggtitle("Top Dependant Variable P-Values") +
+    xlab("Variable") +
+    ylab("P-Value") +
+    theme_minimal()
+
+## Sorted list of significant P-Values
+top_attr_pval <- attr_pvalue_df %>%
+    filter(attr_pvalue_df$column_name != "(Intercept)" & .05 - p_value > 0) %>%
+    arrange(p_value)
+top_attr_pval
+
+# Individual Charts
+## Sales Representatives, Age, OverTime, Stock Option Level, Marital Status
+case_df_trim %>%
+    select(Attrition, OverTime, Age, MaritalStatus) %>%
+    ggpairs(aes(fill = Attrition))
+
+# Attrition Rate
+case_df_trim %>%
+    group_by(Attrition) %>%
+    summarise(count = n()) %>%
+    pivot_wider(names_from = Attrition, values_from = count) %>%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %>%
+    arrange(desc(attr_rate))
+
+## Overtime
+case_df_trim %>%
+    group_by(OverTime, Attrition) %>%
+    summarise(count = n()) %>%
+    pivot_wider(names_from = Attrition, values_from = count) %>%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %>%
+    arrange(desc(attr_rate))
+
+case_df_trim %>%
+    ggplot(aes(x = OverTime, fill = Attrition)) +
+    geom_bar() +
+    ggtitle("Attrition by Overtime") +
+    xlab("Overtime") +
+    ylab("Count") +
+    theme_minimal()
+
+case_df_trim %>%
+    ggplot(aes(x = Age, fill = Attrition)) +
+    geom_histogram() +
+    facet_wrap(~OverTime, ncol = 1) +
+    ggtitle("Age Attrition by Overtime Histogram") +
+    xlab("Age") +
+    ylab("Count") +
+    theme_minimal()
+
+## Single and Overtime
+case_df_trim %>%
+    group_by(OverTime, , MaritalStatus, Attrition) %>%
+    summarise(count = n()) %>%
+    pivot_wider(names_from = Attrition, values_from = count) %>%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %>%
+    arrange(desc(attr_rate))
+
+## Job Involvement
+case_df_trim %>%
+    group_by(JobInvolvement, Attrition) %>%
+    summarise(count = n()) %>%
+    pivot_wider(names_from = Attrition, values_from = count) %>%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %>%
+    arrange(desc(attr_rate))
+
+case_df_trim %>%
+    ggplot(aes(x = JobInvolvement, fill = Attrition)) +
+    geom_bar() +
+    ggtitle("Attrition by Job Involvement") +
+    xlab("Job Involvement") +
+    ylab("Count") +
+    theme_minimal()
+
+## Stock Option Level
+case_df_trim %>%
+    group_by(StockOptionLevel, Attrition) %>%
+    summarise(count = n()) %>%
+    pivot_wider(names_from = Attrition, values_from = count) %>%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %>%
+    arrange(desc(attr_rate))
+
+case_df_trim %>%
+    ggplot(aes(x = StockOptionLevel, y = JobLevel, fill = Attrition)) +
+    geom_smooth() +
+    geom_point() +
+    ggtitle("Stock Option Level vs. Job Level") +
+    xlab("Stock Option Level") +
+    ylab("Job Level") +
+    theme_minimal()
+
+case_df_trim %>%
+    ggplot(aes(x = JobLevel, fill = Attrition)) +
+    geom_bar() +
+    ggtitle("Stock Option Level vs. Job Level") +
+    xlab("Stock Option Level") +
+    ylab("Job Level") +
+    theme_minimal()
+
+table(case_df_trim$StockOptionLevel, case_df_trim$JobLevel)
+
+## Job Role
+case_df_trim %>%
+    ggplot(aes(x = JobRole, fill = Attrition)) +
+    geom_bar() +
+    ggtitle("JobRole Attrition") +
+    xlab("Job Role") +
+    ylab("Count") +
+    theme_minimal()
+
+case_df_trim %>%
+    group_by(JobRole, Attrition) %>%
+    summarise(count = n()) %>%
+    pivot_wider(names_from = Attrition, values_from = count) %>%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %>%
+    arrange(desc(attr_rate))
+
+## Age Attrition
+case_df_trim %>%
+    ggplot(aes(y = Age, x = Attrition, fill = Attrition)) +
+    geom_boxplot() +
+    ggtitle("Age Attrition") +
+    xlab("Attrition") +
+    ylab("Age") +
+    theme_minimal()
+
+case_df_trim %>%
+    mutate(age_group =
+        case_when(
+            Age < 25 ~ "<25",
+            Age >= 25 & Age < 30 ~ "25-29",
+            Age >= 30 & Age < 35 ~ "30-34",
+            Age >= 35 & Age < 40 ~ "35-39",
+            Age >= 40 & Age < 45 ~ "40-44",
+            Age >= 45 & Age < 50 ~ "45-49",
+            Age >= 50 ~ ">50"
+        ),
+        age_group =
+            factor(age_group,
+                level = c(
+                    "<25",
+                    "25-29",
+                    "30-34",
+                    "35-39",
+                    "40-44",
+                    "45-49",
+                    ">50"
+                )
+            )
+    ) %>%
+    group_by(age_group, Attrition) %>%
+    summarise(count = n()) %>%
+    pivot_wider(names_from = Attrition, values_from = count) %>%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %>%
+    arrange(desc(attr_rate))
+
+## Sales Representatives by Age
+case_df_trim %>%
+    filter(JobRole == "SalesRepresentative") %>%
+    ggplot(aes(y = Age, fill = Attrition)) +
+    geom_boxplot() +
+    ggtitle("Sales Representatives Age Range") +
+    xlab("Attrition") +
+    ylab("Age") +
+    theme_minimal()
+
+case_df_trim %>%
+    filter(JobRole == "SalesRepresentative") %>%
+    ggplot(aes(y = MonthlyIncome, fill = Attrition)) +
+    geom_boxplot() +
+    ggtitle("Sales Representatives Age Range") +
+    xlab("Attrition") +
+    ylab("Monthly Income") +
+    theme_minimal()
+
+## Years since last promotion
+case_df_trim %>%
+    ggplot(aes(x = YearsSinceLastPromotion, fill = Attrition)) +
+    geom_histogram() +
+    ggtitle("Years Since Last Promotion Distribution") +
+    xlab("Years Since Last Promotion") +
+    ylab("Count") +
+    theme_minimal()
+
+case_df_trim %>%
+    mutate(promotion_group =
+        case_when(
+            YearsSinceLastPromotion < 1 ~ "<1",
+            YearsSinceLastPromotion >= 1 & YearsSinceLastPromotion < 5 ~ "1-4",
+            YearsSinceLastPromotion >= 5 & YearsSinceLastPromotion < 10 ~ "5-9",
+            YearsSinceLastPromotion >= 10 &
+                YearsSinceLastPromotion < 15 ~ "10-14",
+            YearsSinceLastPromotion >= 15 ~ ">15"
+        ),
+        promotion_group =
+            factor(promotion_group,
+                level = c(
+                    "<1",
+                    "1-4",
+                    "5-9",
+                    "10-14",
+                    ">15"
+                )
+            )
+    ) %>%
+    group_by(promotion_group, Attrition) %>%
+    summarise(count = n()) %>%
+    pivot_wider(names_from = Attrition, values_from = count) %>%
+    mutate(attr_rate = round(Yes / (No + Yes), 2))
+
+## Marital Status
+case_df_trim %>%
+    ggplot(aes(x = MaritalStatus, fill = Attrition)) +
+    geom_bar() +
+    ggtitle("Attrition by Marital Status") +
+    xlab("Marital Status") +
+    ylab("Count") +
+    theme_minimal()
+
+case_df_trim %>%
+    group_by(MaritalStatus, Attrition) %>%
+    summarise(count = n()) %>%
+    pivot_wider(names_from = Attrition, values_from = count) %>%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %>%
+    arrange(desc(attr_rate))
+
+case_df_trim %>%
+    ggplot(aes(x = MaritalStatus, y = Age, fill = OverTime)) +
+    geom_boxplot() +
+    ggtitle("Attrition by Marital Status") +
+    xlab("Marital Status") +
+    ylab("Count") +
+    theme_minimal()
+
+case_df_trim %>%
+    ggplot(aes(x = JobRole, y = MaritalStatus, fill = MaritalStatus)) +
+    geom_bar(stat = "identity") +
+    ggtitle("Attrition by Marital Status and Job Role") +
+    xlab("Job Role") +
+    ylab("Count") +
+    theme_minimal()
+
+# Monthly Income
+## Linear Regression
+### Remove columns with collinearity to Monthly Income
+income_df <-
+    subset(dummy_df,
+        select = -c(income_dif_role, income_dif_level)
+    )
+
+income_lm_model <- lm(MonthlyIncome ~ ., income_df)
+
+pvalue_df <- rownames_to_column(as.data.frame(summary(income_lm_model)$coefficients[, 4])) #nolint
+colnames(pvalue_df) <- c("column_name", "p_value")
+
+### Top Dependant Variables p-values
+pvalue_df %>%
+    filter(pvalue_df$column_name != "(Intercept)" & .05 - p_value > 0) %>%
+    ggplot(aes(x = reorder(column_name, p_value), y = p_value)) +
+    geom_bar(stat = "identity", fill = "#00002c") +
+    ggtitle("Top Dependant Variable P-Values") +
+    xlab("Variable") +
+    ylab("P-Value") +
+    theme_minimal()
+
+top_income_pval <- pvalue_df %>%
+    filter(pvalue_df$column_name != "(Intercept)" & .05 - p_value > 0) %>%
+    arrange(p_value)
+top_income_pval
+
+best_pvalue_df <-
+    pvalue_df %>%
+    filter(pvalue_df$column_name != "(Intercept)" & .05 - p_value > 0) %>%
+    select(column_name)
+
+# Individual charts
+case_df_trim %>%
+    select(MonthlyIncome, Attrition, JobLevel, JobRole, BusinessTravel) %>%
+    ggpairs(aes(fill = Attrition))
+
+## Higher potential for earning when you travel some.
+## Those who don't get paid well and have to travel leave.
+
+## Job Role
+case_df_trim %>%
+    ggplot(aes(x = JobRole, y = MonthlyIncome, fill = JobRole)) +
+    geom_boxplot() +
+    ggtitle("Job Role and Monthly Income") +
+    xlab("Job Role") +
+    ylab("Monthly Income") +
+    theme_minimal()
+
+case_df_trim %>%
+    ggplot(aes(x = JobRole, y = MonthlyIncome, fill = Attrition)) +
+    geom_boxplot() +
+    ggtitle("Attrition by Job Role and Monthly Income") +
+    xlab("Job Role") +
+    ylab("Monthly Income") +
+    theme_minimal()
+
+## Job Level
+case_df_trim %>%
+    ggplot(aes(x = as.factor(JobLevel), y = MonthlyIncome, fill = JobLevel)) +
+    geom_boxplot() +
+    ggtitle("Job Level and Monthly Income") +
+    xlab("Job Level") +
+    ylab("Monthly Income") +
+    theme_minimal()
+
+## Business Travel
+case_df_trim %>%
+    ggplot(aes(x = as.factor(BusinessTravel),
+        y = MonthlyIncome, fill = BusinessTravel)) +
+    geom_boxplot() +
+    ggtitle("Business Travel and Monthly Income") +
+    xlab("Business Travel") +
+    ylab("Monthly Income") +
+    theme_minimal()
+
+## OverTime vs. Monthly Income
+attr_pvalue_df %>%
+    filter(attr_pvalue_df$column_name != "(Intercept)") %>%
+    arrange(p_value)
+
+pvalue_df %>%
+    filter(pvalue_df$column_name != "(Intercept)") %>%
+    arrange(p_value)
+
+## Overtime Monthly Income
+case_df_trim %>%
+    ggplot(aes(x = OverTime,
+        y = MonthlyIncome, fill = OverTime)) +
+    geom_boxplot() +
+    ggtitle("Over Time and Monthly Income") +
+    xlab("Over Time") +
+    ylab("Monthly Income") +
+    theme_minimal()
+
+case_df_trim %>%
+    ggplot(aes(x = JobRole, fill = OverTime)) +
+    geom_bar() +
+    ggtitle("Over Time and Monthly Income") +
+    xlab("Over Time") +
+    ylab("Monthly Income") +
+    theme_minimal()
+
+```
+
+# Attrition Models
+## Linear Regression
+```{r}
+# Create data frame with best variables
+best_case_df_att <-
+    subset(dummy_df,
+        select = c(top_attr_pval$column_name, "Attrition_Yes"))
+
+# Linear Regression Model Test
+index_lr_att <-
+    sample(seq(1, dim(best_case_df_att)[1], 1), .7 * dim(best_case_df_att)[1])
+train_lr_att <- best_case_df_att[index_lr_att, ]
+test_lr_att <- best_case_df_att[-index_lr_att, ]
+
+attr_lr <- lm(Attrition_Yes ~ ., train_lr_att)
+
+p_linear_attr <- predict(attr_lr, test_lr_att, type = "response")
+
+p_linear_attr <- ifelse(p_linear_attr > 0.5, 1, 0)
+
+confusionMatrix(table(p_linear_attr, test_lr_att$Attrition_Yes))
+```
+
+## Logistical Regression
+```{r}
+# Logistical Regression Model Test
+index_lr <- sample(seq(1, dim(attrition_df)[1], 1),
+     .7 * dim(attrition_df)[1])
+train_lr <- attrition_df[index_lr, ]
+test_lr <- attrition_df[-index_lr, ]
+
+log_reg_att <- glm(Attrition_Yes ~ ., data = train_lr, family = "binomial")
+anova(log_reg_att, test = "Chisq")
+
+p_lr_attr <-
+    predict(log_reg_att,
+        newdata = test_lr,
+        type = "response"
+    )
+# Converting probability to binomial response
+p_lr_attr <- ifelse(p_lr_attr > 0.5, 1, 0)
+
+confusionMatrix(table(p_lr_attr, test_lr$Attrition_Yes))
+```
+
+## Random Forest
+```{r}
+attrition_rf_df <- dummy_df_attrition
+
+# Random Forest with all variables
+case_rf <-
+    randomForest(
+        as.factor(Attrition) ~ .,
+        data = attrition_rf_df,
+        importance = TRUE,
+        proximity = TRUE,
+        ntree = 2000,
+        mtry = 2
+    )
+
+case_rf
+varImpPlot(case_rf, main = "Variable Importance")
+
+# Remove variables hurting the model
+case_study_trim <-
+    subset(attrition_rf_df,
+        select = c(Attrition, OverTime_Yes, MonthlyIncome, StockOptionLevel,
+            JobLevel, Age, JobInvolvement, MaritalStatus_Single,
+            MaritalStatus_Divorced, YearsAtCompany, JobRole_SalesRepresentative
+        )
+    )
+str(case_study_trim)
+
+# Random Forest model comparision to base
+case_rf_trim <-
+    randomForest(
+        as.factor(Attrition) ~ .,
+        data = case_study_trim,
+        importance = TRUE,
+        proximity = TRUE,
+        ntree = 2000,
+        mtry = 2
+    )
+case_rf_trim
+varImpPlot(case_rf_trim, main = "Variable Importance - Refined")
+
+
+# Create data frame for each class
+no_df_trimed <- case_study_trim %>% filter(Attrition == "No")
+yes_df_trimed <- case_study_trim %>% filter(Attrition == "Yes")
+
+# Set index length based on class with the smallest data set
+# This will undersample the larger class dataset to match the other class sample
+no_len <- dim(no_df_trimed)[1]
+yes_len <- dim(yes_df_trimed)[1]
+index_len <- min(no_len, yes_len)
+
+# Set index for both classes
+no_index <- sample(seq(1, dim(no_df_trimed)[1], 1), .8 * index_len)
+yes_index <- sample(seq(1, dim(yes_df_trimed)[1], 1), .8 * index_len)
+
+# Create train and test for both classes
+train_no <- no_df_trimed[no_index, ]
+train_yes <- yes_df_trimed[yes_index, ]
+
+test_no <- no_df_trimed[-no_index, ]
+test_yes <- yes_df_trimed[-yes_index, ]
+
+# Merge train and test class data frames back together
+train_df <- rbind(train_no, train_yes)
+test_df <- rbind(test_no, test_yes)
+
+# For loop to find best number of variables to sample
+iterations <- 200
+num_mtry <- dim(case_study_trim)[2]
+num_ntree <- 1000
+
+master_acc <- matrix(nrow = iterations, ncol = num_mtry)
+master_sens <- matrix(nrow = iterations, ncol = num_mtry)
+master_spec <- matrix(nrow = iterations, ncol = num_mtry)
+
+for (j in 1:iterations) {
+
+    for (i in 1:num_mtry) {
+        case_rf <-
+        randomForest(
+            as.factor(Attrition) ~ .,
+            data = train_df,
+            importance = TRUE,
+            proximity = TRUE,
+            ntree = num_ntree,
+            mtry = i
+        )
+
+        rf_p_for <- predict(case_rf, test_df)
+        cm_for <- confusionMatrix(rf_p_for, as.factor(test_df$Attrition))
+
+        master_acc[j, i] <- cm_for$overall["Accuracy"]
+        master_sens[j, i] <- cm_for$byClass["Sensitivity"]
+        master_spec[j, i] <- cm_for$byClass["Specificity"]
+    }
+}
+
+master_acc_df <- as.data.frame(colMeans(master_acc))
+master_sens_df <- as.data.frame(colMeans(master_sens))
+master_spec_df <- as.data.frame(colMeans(master_spec))
+colnames(master_acc_df) <- c("mean_acc")
+colnames(master_sens_df) <- c("mean_sens")
+colnames(master_spec_df) <- c("mean_spec")
+
+# Best mtry value
+best_overall <-
+    which.max(master_acc_df$mean_acc + master_sens_df$mean_sens +
+        master_spec_df$mean_spec)
+best_mtry_acc <- which.max(master_acc_df$mean_acc)
+best_mtry_sens <- which.max(master_sens_df$mean_sens)
+best_mtry_spec <- which.max(master_spec_df$mean_spec)
+
+best_overall
+best_mtry_acc
+best_mtry_sens
+best_mtry_spec
+
+
+# Best overall model
+best_overall_rf <- randomForest(
+    as.factor(Attrition) ~ .,
+    data = train_df,
+    importance = TRUE,
+    proximity = TRUE,
+    ntree = num_ntree,
+    mtry = best_overall
+)
+varImpPlot(best_overall_rf, main = "Overall - Variable Importance")
+
+rf_p_overall <- predict(best_overall_rf, test_df)
+cm_overall <- confusionMatrix(rf_p_overall, as.factor(test_df$Attrition))
+cm_overall
+
+# Best accuracy model
+best_acc_rf <- randomForest(
+    as.factor(Attrition) ~ .,
+    data = train_df,
+    importance = TRUE,
+    proximity = TRUE,
+    ntree = num_ntree,
+    mtry = best_mtry_acc
+)
+varImpPlot(best_acc_rf, main = "Accuracy - Variable Importance")
+
+rf_p_acc <- predict(best_acc_rf, test_df)
+cm_acc <- confusionMatrix(rf_p_acc, as.factor(test_df$Attrition))
+cm_acc
+
+# Best sensitivity model
+best_sens_rf <- randomForest(
+    as.factor(Attrition) ~ .,
+    data = train_df,
+    importance = TRUE,
+    proximity = TRUE,
+    ntree = num_ntree,
+    mtry = best_mtry_sens
+)
+varImpPlot(best_sens_rf, main = "Sensitivity - Variable Importance")
+
+rf_p_sens <- predict(best_sens_rf, test_df)
+cm_sens <- confusionMatrix(rf_p_sens, as.factor(test_df$Attrition))
+cm_sens
+
+# Best specificity model
+best_spec_rf <- randomForest(
+    as.factor(Attrition) ~ .,
+    data = train_df,
+    importance = TRUE,
+    proximity = TRUE,
+    ntree = num_ntree,
+    mtry = best_mtry_spec
+)
+varImpPlot(best_spec_rf, main = "Specificity - Variable Importance")
+
+rf_p_spec <- predict(best_spec_rf, test_df)
+cm_spec <- confusionMatrix(rf_p_spec, as.factor(test_df$Attrition))
+cm_spec
+```
+
+## Naive Bayes
+```{r}
+# Naive Bayes all variables included
+## Set Naive Bayes Index
+nb_index <- sample(seq(1, dim(case_study_df)[1], 1), .8 * dim(case_study_df)[1])
+
+## Create Naive Bayes train/test data sets
+nb_train <- case_study_df[nb_index, ]
+nb_test <- case_study_df[-nb_index, ]
+
+## Model
+nb_model <- naiveBayes(Attrition ~ ., data = nb_train)
+nb_p <- predict(nb_model, nb_test)
+confusionMatrix(nb_p, as.factor(nb_test$Attrition))
+
+# Naive Bayes low importance variables removed based on RF findings
+## Set Naive Bayes Index
+nb_index_trim <-
+    sample(seq(1, dim(case_study_trim)[1], 1), .8 * dim(case_study_trim)[1])
+
+# Create Naive Bayes train/test data sets
+nb_train_trim <- case_study_trim[nb_index_trim, ]
+nb_test_trim <- case_study_trim[-nb_index_trim, ]
+
+## Model
+nb_model_trim <- naiveBayes(Attrition ~ ., data = nb_train_trim)
+nb_p_trim <- predict(nb_model, nb_test_trim)
+confusionMatrix(nb_p_trim, as.factor(nb_test_trim$Attrition))
+
+# Naive Bayes top variables only
+## Model
+nb_model <- naiveBayes(Attrition ~ OverTime + MonthlyIncome + StockOptionLevel +
+    Age + MaritalStatus + JobInvolvement + TotalWorkingYears, data = nb_train)
+nb_p <- predict(nb_model, nb_test)
+confusionMatrix(nb_p, as.factor(nb_test$Attrition))
+```
+
+# Monthly Income Models
+## Linear Regression
+```{r}
+# Create data frame with best variables
+best_case_df <-
+    subset(income_df, select = c(best_pvalue_df$column_name, "MonthlyIncome"))
+
+# Linear Regression Model Test
+index <- sample(seq(1, dim(best_case_df)[1], 1), .7 * dim(best_case_df)[1])
+train <- best_case_df[index, ]
+test <- best_case_df[-index, ]
+
+income_lm <- lm(MonthlyIncome ~ ., train)
+
+p_lm_income <- predict(income_lm, test)
+
+plot(test$MonthlyIncome, p_lm_income - test$MonthlyIncome,
+    pch = 18,
+    main = "Linear Regression - Monthly Income Residuals",
+    ylab = "Residuals (Predicted - Observered)",
+    xlab = "Observed Monthly Income", col = "#15156285")
+abline(h = 0, col = "#991d1d", lty = 2)
+
+mi_lm_rmse <- RMSE(p_lm_income, test$MonthlyIncome)
+mi_lm_rmse
+```
+
+# Predictions
+```{r}
+# Attrition
+no_attrition <- read.csv("C:/Users/corey/OneDrive/Documents/GitHub/DDS-Project-2/Data Sources/CaseStudy2CompSet No Attrition.csv", header = TRUE) # nolint
+
+## Mean Monthly Income by Job Role
+job_role_income_na <-
+    no_attrition %>%
+    group_by(JobRole) %>%
+    summarise(mean_income_role = mean(MonthlyIncome))
+
+## Mean Monthly Income by Job Level
+job_level_income_na <-
+    no_attrition %>%
+    group_by(JobLevel) %>%
+    summarise(mean_income_level = mean(MonthlyIncome))
+
+# Merge columns into main data frame
+no_attrition <- left_join(no_attrition, job_role_income_na)
+no_attrition <- left_join(no_attrition, job_level_income_na)
+
+no_attrition <-
+    no_attrition %>%
+    mutate(income_dif_role = MonthlyIncome - mean_income_role,
+        income_dif_level = MonthlyIncome - mean_income_level,
+        JobRole = str_replace_all(JobRole, "[^[:alnum:]]", ""),
+        Department = str_replace_all(Department, "[^[:alnum:]]", ""),
+        EducationField = str_replace_all(EducationField, "[^[:alnum:]]", ""),
+        BusinessTravel = str_replace_all(BusinessTravel, "[^[:alnum:]]", "")
+    )
+
+# Remove columns irrelevant to model or that have collinearity
+no_attrition_trim <-
+    subset(no_attrition,
+        select = -c(
+            ID, Over18, EmployeeCount, EmployeeNumber,
+            StandardHours, mean_income_role, mean_income_level
+        )
+    )
+
+# Producing dummy columns for categorical variables
+dummy_df_na <-
+    dummy_cols(
+        no_attrition_trim,
+        c("BusinessTravel", "Department", "EducationField",
+            "Gender", "JobRole", "MaritalStatus", "OverTime"),
+        remove_selected_columns = TRUE
+    )
+# Removing No Option from Attrition and Overtime for multicollinearity
+dummy_df_na <-
+    subset(dummy_df_na,
+        select = -c(OverTime_No)
+    )
+
+no_attrition_rf <- randomForest(
+    as.factor(Attrition) ~ .,
+    data = case_study_trim,
+    importance = TRUE,
+    proximity = TRUE,
+    ntree = 2000,
+    mtry = 3
+)
+
+rf_p_acc <- as.data.frame(predict(no_attrition_rf, dummy_df_na))
+colnames(rf_p_acc) <- c("Attrition")
+
+# write.csv(rf_p_acc, "Case2PredictionsAttrition.csv")
+
+# Monthly Income
+
+no_salary <- read.csv("C:/Users/corey/OneDrive/Documents/GitHub/DDS-Project-2/Data Sources/CaseStudy2CompSet No Salary.csv", header = TRUE) # nolint
+
+
+# Create columns to calculate difference from mean and clean data
+no_salary <-
+    no_salary %>%
+    mutate(JobRole = str_replace_all(JobRole, "[^[:alnum:]]", ""),
+        Department = str_replace_all(Department, "[^[:alnum:]]", ""),
+        EducationField = str_replace_all(EducationField, "[^[:alnum:]]", ""),
+        BusinessTravel = str_replace_all(BusinessTravel, "[^[:alnum:]]", "")
+    )
+
+# Producing dummy columns for categorical variables
+dummy_df_ns <-
+    dummy_cols(
+        no_salary,
+        c("Attrition", "BusinessTravel", "Department", "EducationField",
+            "Gender", "JobRole", "MaritalStatus", "OverTime"),
+        remove_selected_columns = TRUE
+    )
+# Removing No Option from Attrition and Overtime for multicollinearity
+dummy_df_ns <-
+    subset(dummy_df_ns,
+        select = -c(Attrition_No, OverTime_No)
+    )
+
+
+# Create data frame with best variables
+best_case_df_ns <-
+    subset(income_df, select = c(best_pvalue_df$column_name, "MonthlyIncome"))
+
+
+income_lm_ns <- lm(MonthlyIncome ~ ., best_case_df_ns)
+
+p_lm_income_ns <- as.data.frame(predict(income_lm_ns, dummy_df_ns))
+
+colnames(p_lm_income_ns) <- c("MonthlyIncome")
+
+# write.csv(p_lm_income_ns, "Case2PredictionsMonthlyIncome.csv")
+```

@@ -1,0 +1,2352 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Project2.knit</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">My Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">About Me</a>
+</li>
+<li>
+  <a href="project_1.html">Beer Analysis RMD</a>
+</li>
+<li>
+  <a href="Project2.html">CaseStudy2DDS</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<div id="libraries" class="section level1">
+<h1>Libraries</h1>
+<pre class="r"><code>library(tidyverse)
+library(magrittr)
+library(dplyr)
+library(plotly)
+library(class)
+library(e1071)
+library(psych)
+library(randomForest)
+library(caret)
+library(fastDummies)
+library(recipes)
+library(GGally)
+library(aod)</code></pre>
+</div>
+<div id="youtube-link" class="section level1">
+<h1>YouTube Link</h1>
+<p><a href="https://www.youtube.com/watch?v=yoGmXTMErUk&amp;ab_channel=DaneHolmes" class="uri">https://www.youtube.com/watch?v=yoGmXTMErUk&amp;ab_channel=DaneHolmes</a></p>
+</div>
+<div id="data-importtransformation" class="section level1">
+<h1>Data Import/Transformation</h1>
+<pre class="r"><code># Source
+case_study_df &lt;- read.csv(&quot;C:/Users/corey/OneDrive/Documents/GitHub/DDS-Project-2/Data Sources/CaseStudy2-data.csv&quot;, header = TRUE) # nolint
+str(case_study_df)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    870 obs. of  36 variables:
+##  $ ID                      : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ Age                     : int  32 40 35 32 24 27 41 37 34 34 ...
+##  $ Attrition               : chr  &quot;No&quot; &quot;No&quot; &quot;No&quot; &quot;No&quot; ...
+##  $ BusinessTravel          : chr  &quot;Travel_Rarely&quot; &quot;Travel_Rarely&quot; &quot;Travel_Frequently&quot; &quot;Travel_Rarely&quot; ...
+##  $ DailyRate               : int  117 1308 200 801 567 294 1283 309 1333 653 ...
+##  $ Department              : chr  &quot;Sales&quot; &quot;Research &amp; Development&quot; &quot;Research &amp; Development&quot; &quot;Sales&quot; ...
+##  $ DistanceFromHome        : int  13 14 18 1 2 10 5 10 10 10 ...
+##  $ Education               : int  4 3 2 4 1 2 5 4 4 4 ...
+##  $ EducationField          : chr  &quot;Life Sciences&quot; &quot;Medical&quot; &quot;Life Sciences&quot; &quot;Marketing&quot; ...
+##  $ EmployeeCount           : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ EmployeeNumber          : int  859 1128 1412 2016 1646 733 1448 1105 1055 1597 ...
+##  $ EnvironmentSatisfaction : int  2 3 3 3 1 4 2 4 3 4 ...
+##  $ Gender                  : chr  &quot;Male&quot; &quot;Male&quot; &quot;Male&quot; &quot;Female&quot; ...
+##  $ HourlyRate              : int  73 44 60 48 32 32 90 88 87 92 ...
+##  $ JobInvolvement          : int  3 2 3 3 3 3 4 2 3 2 ...
+##  $ JobLevel                : int  2 5 3 3 1 3 1 2 1 2 ...
+##  $ JobRole                 : chr  &quot;Sales Executive&quot; &quot;Research Director&quot; &quot;Manufacturing Director&quot; &quot;Sales Executive&quot; ...
+##  $ JobSatisfaction         : int  4 3 4 4 4 1 3 4 3 3 ...
+##  $ MaritalStatus           : chr  &quot;Divorced&quot; &quot;Single&quot; &quot;Single&quot; &quot;Married&quot; ...
+##  $ MonthlyIncome           : int  4403 19626 9362 10422 3760 8793 2127 6694 2220 5063 ...
+##  $ MonthlyRate             : int  9250 17544 19944 24032 17218 4809 5561 24223 18410 15332 ...
+##  $ NumCompaniesWorked      : int  2 1 2 1 1 1 2 2 1 1 ...
+##  $ Over18                  : chr  &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ OverTime                : chr  &quot;No&quot; &quot;No&quot; &quot;No&quot; &quot;No&quot; ...
+##  $ PercentSalaryHike       : int  11 14 11 19 13 21 12 14 19 14 ...
+##  $ PerformanceRating       : int  3 3 3 3 3 4 3 3 3 3 ...
+##  $ RelationshipSatisfaction: int  3 1 3 3 3 3 1 3 4 2 ...
+##  $ StandardHours           : int  80 80 80 80 80 80 80 80 80 80 ...
+##  $ StockOptionLevel        : int  1 0 0 2 0 2 0 3 1 1 ...
+##  $ TotalWorkingYears       : int  8 21 10 14 6 9 7 8 1 8 ...
+##  $ TrainingTimesLastYear   : int  3 2 2 3 2 4 5 5 2 3 ...
+##  $ WorkLifeBalance         : int  2 4 3 3 3 2 2 3 3 2 ...
+##  $ YearsAtCompany          : int  5 20 2 14 6 9 4 1 1 8 ...
+##  $ YearsInCurrentRole      : int  2 7 2 10 3 7 2 0 1 2 ...
+##  $ YearsSinceLastPromotion : int  0 4 2 5 1 1 0 0 0 7 ...
+##  $ YearsWithCurrManager    : int  3 9 2 7 3 7 3 0 0 7 ...</code></pre>
+<pre class="r"><code># Seed
+set.seed(100)
+
+# Additional columns
+## Mean Monthly Income by Job Role
+job_role_income &lt;-
+    case_study_df %&gt;%
+    group_by(JobRole) %&gt;%
+    summarise(mean_income_role = mean(MonthlyIncome))
+
+## Mean Monthly Income by Job Level
+job_level_income &lt;-
+    case_study_df %&gt;%
+    group_by(JobLevel) %&gt;%
+    summarise(mean_income_level = mean(MonthlyIncome))
+
+# Merge columns into main data frame
+case_study_df &lt;- left_join(case_study_df, job_role_income)</code></pre>
+<pre><code>## Joining, by = &quot;JobRole&quot;</code></pre>
+<pre class="r"><code>case_study_df &lt;- left_join(case_study_df, job_level_income)</code></pre>
+<pre><code>## Joining, by = &quot;JobLevel&quot;</code></pre>
+<pre class="r"><code># Create columns to calculate difference from mean and clean data
+case_study_df &lt;-
+    case_study_df %&gt;%
+    mutate(income_dif_role = MonthlyIncome - mean_income_role,
+        income_dif_level = MonthlyIncome - mean_income_level,
+        JobRole = str_replace_all(JobRole, &quot;[^[:alnum:]]&quot;, &quot;&quot;),
+        Department = str_replace_all(Department, &quot;[^[:alnum:]]&quot;, &quot;&quot;),
+        EducationField = str_replace_all(EducationField, &quot;[^[:alnum:]]&quot;, &quot;&quot;),
+        BusinessTravel = str_replace_all(BusinessTravel, &quot;[^[:alnum:]]&quot;, &quot;&quot;)
+    )
+
+# Remove columns irrelevant to model or that have collinearity
+case_df_trim &lt;-
+    subset(case_study_df,
+        select = -c(
+            ID, Over18, EmployeeCount, EmployeeNumber,
+            StandardHours, mean_income_role, mean_income_level
+        )
+    )
+
+# Producing dummy columns for categorical variables
+dummy_df &lt;-
+    dummy_cols(
+        case_df_trim,
+        c(&quot;Attrition&quot;, &quot;BusinessTravel&quot;, &quot;Department&quot;, &quot;EducationField&quot;,
+            &quot;Gender&quot;, &quot;JobRole&quot;, &quot;MaritalStatus&quot;, &quot;OverTime&quot;),
+        remove_selected_columns = TRUE
+    )
+# Removing No Option from Attrition and Overtime for multicollinearity
+dummy_df &lt;-
+    subset(dummy_df,
+        select = -c(Attrition_No, OverTime_No)
+    )
+# Creating data frame with dummy columns that keep original Attrition column
+dummy_df_attrition &lt;-
+    dummy_cols(
+        case_df_trim,
+        c(&quot;BusinessTravel&quot;, &quot;Department&quot;, &quot;EducationField&quot;,
+            &quot;Gender&quot;, &quot;JobRole&quot;, &quot;MaritalStatus&quot;, &quot;OverTime&quot;),
+        remove_selected_columns = TRUE
+    )
+
+dummy_df_attrition &lt;-
+    subset(dummy_df_attrition,
+        select = -c(OverTime_No)
+    )</code></pre>
+</div>
+<div id="eda" class="section level1">
+<h1>EDA</h1>
+<pre class="r"><code># Attrition
+## Logistical Regression best p-values
+attrition_df &lt;- dummy_df
+
+## Obtaining P-Value for Attrition
+log_reg &lt;- glm(Attrition_Yes ~ ., data = attrition_df, family = &quot;binomial&quot;)
+anova(log_reg, test = &quot;Chisq&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model: binomial, link: logit
+## 
+## Response: Attrition_Yes
+## 
+## Terms added sequentially (first to last)
+## 
+## 
+##                                  Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+## NULL                                               869     767.67              
+## Age                               1   20.496       868     747.18 5.976e-06 ***
+## DailyRate                         1    0.855       867     746.32 0.3550930    
+## DistanceFromHome                  1    6.666       866     739.66 0.0098266 ** 
+## Education                         1    0.254       865     739.40 0.6140611    
+## EnvironmentSatisfaction           1    5.334       864     734.07 0.0209160 *  
+## HourlyRate                        1    1.518       863     732.55 0.2178581    
+## JobInvolvement                    1   29.652       862     702.90 5.169e-08 ***
+## JobLevel                          1   13.267       861     689.63 0.0002701 ***
+## JobSatisfaction                   1   12.169       860     677.46 0.0004858 ***
+## MonthlyIncome                     1    0.000       859     677.46 0.9971451    
+## MonthlyRate                       1    0.403       858     677.06 0.5256393    
+## NumCompaniesWorked                1   10.883       857     666.17 0.0009703 ***
+## PercentSalaryHike                 1    0.015       856     666.16 0.9025008    
+## PerformanceRating                 1    0.001       855     666.16 0.9698064    
+## RelationshipSatisfaction          1    2.064       854     664.09 0.1507723    
+## StockOptionLevel                  1   19.942       853     644.15 7.983e-06 ***
+## TotalWorkingYears                 1    5.248       852     638.90 0.0219776 *  
+## TrainingTimesLastYear             1    5.100       851     633.80 0.0239312 *  
+## WorkLifeBalance                   1    5.258       850     628.55 0.0218427 *  
+## YearsAtCompany                    1    0.456       849     628.09 0.4997180    
+## YearsInCurrentRole                1    5.494       848     622.60 0.0190825 *  
+## YearsSinceLastPromotion           1   17.785       847     604.81 2.474e-05 ***
+## YearsWithCurrManager              1    4.033       846     600.78 0.0446093 *  
+## income_dif_role                   1    7.175       845     593.60 0.0073933 ** 
+## income_dif_level                  1    6.850       844     586.75 0.0088619 ** 
+## BusinessTravel_NonTravel          1    6.815       843     579.94 0.0090419 ** 
+## BusinessTravel_TravelFrequently   1    5.562       842     574.38 0.0183523 *  
+## BusinessTravel_TravelRarely       0    0.000       842     574.38              
+## Department_HumanResources         1    0.085       841     574.29 0.7707070    
+## Department_ResearchDevelopment    1   17.133       840     557.16 3.485e-05 ***
+## Department_Sales                  0    0.000       840     557.16              
+## EducationField_HumanResources     1    1.326       839     555.83 0.2495790    
+## EducationField_LifeSciences       1    0.516       838     555.32 0.4724719    
+## EducationField_Marketing          1    0.014       837     555.30 0.9072382    
+## EducationField_Medical            1    0.751       836     554.55 0.3860137    
+## EducationField_Other              1    0.051       835     554.50 0.8209263    
+## EducationField_TechnicalDegree    0    0.000       835     554.50              
+## Gender_Female                     1    0.382       834     554.12 0.5364352    
+## Gender_Male                       0    0.000       834     554.12              
+## JobRole_HealthcareRepresentative  1    2.552       833     551.57 0.1101557    
+## JobRole_HumanResources            1    0.291       832     551.28 0.5898537    
+## JobRole_LaboratoryTechnician      1    1.890       831     549.39 0.1691816    
+## JobRole_Manager                   1    1.502       830     547.88 0.2204291    
+## JobRole_ManufacturingDirector     1    1.449       829     546.44 0.2287647    
+## JobRole_ResearchDirector          1    0.091       828     546.34 0.7633826    
+## JobRole_ResearchScientist         1    1.137       827     545.21 0.2862304    
+## JobRole_SalesExecutive            0    0.000       827     545.21              
+## JobRole_SalesRepresentative       0    0.000       827     545.21              
+## MaritalStatus_Divorced            1    7.928       826     537.28 0.0048685 ** 
+## MaritalStatus_Married             1    8.818       825     528.46 0.0029820 ** 
+## MaritalStatus_Single              0    0.000       825     528.46              
+## OverTime_Yes                      1   67.874       824     460.59 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>## Data frame of P-Values
+attr_pvalue_df &lt;- rownames_to_column(as.data.frame(anova(log_reg, test = &quot;Chisq&quot;)))[, c(1, 6)] #nolint
+colnames(attr_pvalue_df) &lt;- c(&quot;column_name&quot;, &quot;p_value&quot;)
+
+## P-Values less than .05
+attr_pvalue_df %&gt;%
+    filter(attr_pvalue_df$column_name != &quot;(Intercept)&quot; &amp; .05 - p_value &gt; 0) %&gt;%
+    ggplot(aes(x = reorder(column_name, p_value), y = p_value)) +
+    geom_bar(stat = &quot;identity&quot;, fill = &quot;#00002c&quot;) +
+    ggtitle(&quot;Top Dependant Variable P-Values&quot;) +
+    xlab(&quot;Variable&quot;) +
+    ylab(&quot;P-Value&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>## Sorted list of significant P-Values
+top_attr_pval &lt;- attr_pvalue_df %&gt;%
+    filter(attr_pvalue_df$column_name != &quot;(Intercept)&quot; &amp; .05 - p_value &gt; 0) %&gt;%
+    arrange(p_value)
+top_attr_pval</code></pre>
+<pre><code>##                        column_name      p_value
+## 1                     OverTime_Yes 1.742932e-16
+## 2                   JobInvolvement 5.168935e-08
+## 3                              Age 5.975706e-06
+## 4                 StockOptionLevel 7.983208e-06
+## 5          YearsSinceLastPromotion 2.473565e-05
+## 6   Department_ResearchDevelopment 3.484748e-05
+## 7                         JobLevel 2.700889e-04
+## 8                  JobSatisfaction 4.858480e-04
+## 9               NumCompaniesWorked 9.703351e-04
+## 10           MaritalStatus_Married 2.981981e-03
+## 11          MaritalStatus_Divorced 4.868451e-03
+## 12                 income_dif_role 7.393304e-03
+## 13                income_dif_level 8.861907e-03
+## 14        BusinessTravel_NonTravel 9.041888e-03
+## 15                DistanceFromHome 9.826588e-03
+## 16 BusinessTravel_TravelFrequently 1.835233e-02
+## 17              YearsInCurrentRole 1.908253e-02
+## 18         EnvironmentSatisfaction 2.091597e-02
+## 19                 WorkLifeBalance 2.184273e-02
+## 20               TotalWorkingYears 2.197757e-02
+## 21           TrainingTimesLastYear 2.393120e-02
+## 22            YearsWithCurrManager 4.460925e-02</code></pre>
+<pre class="r"><code># Individual Charts
+## Sales Representatives, Age, OverTime, Stock Option Level, Marital Status
+case_df_trim %&gt;%
+    select(Attrition, OverTime, Age, MaritalStatus) %&gt;%
+    ggpairs(aes(fill = Attrition))</code></pre>
+<pre><code>## 
+ plot: [1,1] [=====&gt;--------------------------------------------------------------------------------------------]  6% est: 0s 
+ plot: [1,2] [===========&gt;--------------------------------------------------------------------------------------] 12% est: 0s 
+ plot: [1,3] [=================&gt;--------------------------------------------------------------------------------] 19% est: 0s 
+ plot: [1,4] [=======================&gt;--------------------------------------------------------------------------] 25% est: 1s 
+ plot: [2,1] [==============================&gt;-------------------------------------------------------------------] 31% est: 0s 
+ plot: [2,2] [====================================&gt;-------------------------------------------------------------] 38% est: 0s 
+ plot: [2,3] [==========================================&gt;-------------------------------------------------------] 44% est: 0s 
+ plot: [2,4] [================================================&gt;-------------------------------------------------] 50% est: 0s 
+ plot: [3,1] [======================================================&gt;-------------------------------------------] 56% est: 0s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [3,2] [============================================================&gt;-------------------------------------] 62% est: 0s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [3,3] [==================================================================&gt;-------------------------------] 69% est: 0s 
+ plot: [3,4] [=========================================================================&gt;------------------------] 75% est: 0s 
+ plot: [4,1] [===============================================================================&gt;------------------] 81% est: 0s 
+ plot: [4,2] [=====================================================================================&gt;------------] 88% est: 0s 
+ plot: [4,3] [===========================================================================================&gt;------] 94% est: 0s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [4,4] [==================================================================================================]100% est: 0s 
+                                                                                                                              </code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<pre class="r"><code># Attrition Rate
+case_df_trim %&gt;%
+    group_by(Attrition) %&gt;%
+    summarise(count = n()) %&gt;%
+    pivot_wider(names_from = Attrition, values_from = count) %&gt;%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %&gt;%
+    arrange(desc(attr_rate))</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##      No   Yes attr_rate
+##   &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;
+## 1   730   140      0.16</code></pre>
+<pre class="r"><code>## Overtime
+case_df_trim %&gt;%
+    group_by(OverTime, Attrition) %&gt;%
+    summarise(count = n()) %&gt;%
+    pivot_wider(names_from = Attrition, values_from = count) %&gt;%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %&gt;%
+    arrange(desc(attr_rate))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;OverTime&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 2 x 4
+## # Groups:   OverTime [2]
+##   OverTime    No   Yes attr_rate
+##   &lt;chr&gt;    &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;
+## 1 Yes        172    80      0.32
+## 2 No         558    60      0.1</code></pre>
+<pre class="r"><code>case_df_trim %&gt;%
+    ggplot(aes(x = OverTime, fill = Attrition)) +
+    geom_bar() +
+    ggtitle(&quot;Attrition by Overtime&quot;) +
+    xlab(&quot;Overtime&quot;) +
+    ylab(&quot;Count&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-3.png" width="672" /></p>
+<pre class="r"><code>case_df_trim %&gt;%
+    ggplot(aes(x = Age, fill = Attrition)) +
+    geom_histogram() +
+    facet_wrap(~OverTime, ncol = 1) +
+    ggtitle(&quot;Age Attrition by Overtime Histogram&quot;) +
+    xlab(&quot;Age&quot;) +
+    ylab(&quot;Count&quot;) +
+    theme_minimal()</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-4.png" width="672" /></p>
+<pre class="r"><code>## Single and Overtime
+case_df_trim %&gt;%
+    group_by(OverTime, , MaritalStatus, Attrition) %&gt;%
+    summarise(count = n()) %&gt;%
+    pivot_wider(names_from = Attrition, values_from = count) %&gt;%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %&gt;%
+    arrange(desc(attr_rate))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;OverTime&#39;, &#39;MaritalStatus&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 6 x 5
+## # Groups:   OverTime, MaritalStatus [6]
+##   OverTime MaritalStatus    No   Yes attr_rate
+##   &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;
+## 1 Yes      Single           39    44      0.53
+## 2 Yes      Married          80    30      0.27
+## 3 No       Single          160    26      0.14
+## 4 Yes      Divorced         53     6      0.1 
+## 5 No       Married         272    28      0.09
+## 6 No       Divorced        126     6      0.05</code></pre>
+<pre class="r"><code>## Job Involvement
+case_df_trim %&gt;%
+    group_by(JobInvolvement, Attrition) %&gt;%
+    summarise(count = n()) %&gt;%
+    pivot_wider(names_from = Attrition, values_from = count) %&gt;%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %&gt;%
+    arrange(desc(attr_rate))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;JobInvolvement&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 4 x 4
+## # Groups:   JobInvolvement [4]
+##   JobInvolvement    No   Yes attr_rate
+##            &lt;int&gt; &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;
+## 1              1    25    22      0.47
+## 2              2   184    44      0.19
+## 3              3   447    67      0.13
+## 4              4    74     7      0.09</code></pre>
+<pre class="r"><code>case_df_trim %&gt;%
+    ggplot(aes(x = JobInvolvement, fill = Attrition)) +
+    geom_bar() +
+    ggtitle(&quot;Attrition by Job Involvement&quot;) +
+    xlab(&quot;Job Involvement&quot;) +
+    ylab(&quot;Count&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-5.png" width="672" /></p>
+<pre class="r"><code>## Stock Option Level
+case_df_trim %&gt;%
+    group_by(StockOptionLevel, Attrition) %&gt;%
+    summarise(count = n()) %&gt;%
+    pivot_wider(names_from = Attrition, values_from = count) %&gt;%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %&gt;%
+    arrange(desc(attr_rate))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;StockOptionLevel&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 4 x 4
+## # Groups:   StockOptionLevel [4]
+##   StockOptionLevel    No   Yes attr_rate
+##              &lt;int&gt; &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;
+## 1                0   281    98      0.26
+## 2                3    43    12      0.22
+## 3                1   328    27      0.08
+## 4                2    78     3      0.04</code></pre>
+<pre class="r"><code>case_df_trim %&gt;%
+    ggplot(aes(x = StockOptionLevel, y = JobLevel, fill = Attrition)) +
+    geom_smooth() +
+    geom_point() +
+    ggtitle(&quot;Stock Option Level vs. Job Level&quot;) +
+    xlab(&quot;Stock Option Level&quot;) +
+    ylab(&quot;Job Level&quot;) +
+    theme_minimal()</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric, : pseudoinverse used at -0.015</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric, : neighborhood radius 1.015</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric, : reciprocal condition number 0</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric, : There are other near singularities as well. 1</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : pseudoinverse used at -0.015</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : neighborhood radius 1.015</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : reciprocal condition number 0</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : There are other near singularities as well. 1</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric, : pseudoinverse used at -0.015</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric, : neighborhood radius 1.015</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric, : reciprocal condition number 0</code></pre>
+<pre><code>## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric, : There are other near singularities as well. 1</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : pseudoinverse used at -0.015</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : neighborhood radius 1.015</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : reciprocal condition number 0</code></pre>
+<pre><code>## Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x else if (is.data.frame(newdata))
+## as.matrix(model.frame(delete.response(terms(object)), : There are other near singularities as well. 1</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-6.png" width="672" /></p>
+<pre class="r"><code>case_df_trim %&gt;%
+    ggplot(aes(x = JobLevel, fill = Attrition)) +
+    geom_bar() +
+    ggtitle(&quot;Stock Option Level vs. Job Level&quot;) +
+    xlab(&quot;Stock Option Level&quot;) +
+    ylab(&quot;Job Level&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-7.png" width="672" /></p>
+<pre class="r"><code>table(case_df_trim$StockOptionLevel, case_df_trim$JobLevel)</code></pre>
+<pre><code>##    
+##       1   2   3   4   5
+##   0 157 133  51  23  15
+##   1 127 121  59  29  19
+##   2  18  43  13   5   2
+##   3  27  15   9   3   1</code></pre>
+<pre class="r"><code>## Job Role
+case_df_trim %&gt;%
+    ggplot(aes(x = JobRole, fill = Attrition)) +
+    geom_bar() +
+    ggtitle(&quot;JobRole Attrition&quot;) +
+    xlab(&quot;Job Role&quot;) +
+    ylab(&quot;Count&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-8.png" width="672" /></p>
+<pre class="r"><code>case_df_trim %&gt;%
+    group_by(JobRole, Attrition) %&gt;%
+    summarise(count = n()) %&gt;%
+    pivot_wider(names_from = Attrition, values_from = count) %&gt;%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %&gt;%
+    arrange(desc(attr_rate))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;JobRole&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 9 x 4
+## # Groups:   JobRole [9]
+##   JobRole                     No   Yes attr_rate
+##   &lt;chr&gt;                    &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;
+## 1 SalesRepresentative         29    24      0.45
+## 2 HumanResources              21     6      0.22
+## 3 LaboratoryTechnician       123    30      0.2 
+## 4 ResearchScientist          140    32      0.19
+## 5 SalesExecutive             167    33      0.16
+## 6 HealthcareRepresentative    68     8      0.11
+## 7 Manager                     47     4      0.08
+## 8 ManufacturingDirector       85     2      0.02
+## 9 ResearchDirector            50     1      0.02</code></pre>
+<pre class="r"><code>## Age Attrition
+case_df_trim %&gt;%
+    ggplot(aes(y = Age, x = Attrition, fill = Attrition)) +
+    geom_boxplot() +
+    ggtitle(&quot;Age Attrition&quot;) +
+    xlab(&quot;Attrition&quot;) +
+    ylab(&quot;Age&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-9.png" width="672" /></p>
+<pre class="r"><code>case_df_trim %&gt;%
+    mutate(age_group =
+        case_when(
+            Age &lt; 25 ~ &quot;&lt;25&quot;,
+            Age &gt;= 25 &amp; Age &lt; 30 ~ &quot;25-29&quot;,
+            Age &gt;= 30 &amp; Age &lt; 35 ~ &quot;30-34&quot;,
+            Age &gt;= 35 &amp; Age &lt; 40 ~ &quot;35-39&quot;,
+            Age &gt;= 40 &amp; Age &lt; 45 ~ &quot;40-44&quot;,
+            Age &gt;= 45 &amp; Age &lt; 50 ~ &quot;45-49&quot;,
+            Age &gt;= 50 ~ &quot;&gt;50&quot;
+        ),
+        age_group =
+            factor(age_group,
+                level = c(
+                    &quot;&lt;25&quot;,
+                    &quot;25-29&quot;,
+                    &quot;30-34&quot;,
+                    &quot;35-39&quot;,
+                    &quot;40-44&quot;,
+                    &quot;45-49&quot;,
+                    &quot;&gt;50&quot;
+                )
+            )
+    ) %&gt;%
+    group_by(age_group, Attrition) %&gt;%
+    summarise(count = n()) %&gt;%
+    pivot_wider(names_from = Attrition, values_from = count) %&gt;%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %&gt;%
+    arrange(desc(attr_rate))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;age_group&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 7 x 4
+## # Groups:   age_group [7]
+##   age_group    No   Yes attr_rate
+##   &lt;fct&gt;     &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;
+## 1 &lt;25          35    20      0.36
+## 2 25-29        98    32      0.25
+## 3 30-34       171    35      0.17
+## 4 &gt;50          76    13      0.15
+## 5 35-39       156    19      0.11
+## 6 40-44       109    12      0.1 
+## 7 45-49        85     9      0.1</code></pre>
+<pre class="r"><code>## Sales Representatives by Age
+case_df_trim %&gt;%
+    filter(JobRole == &quot;SalesRepresentative&quot;) %&gt;%
+    ggplot(aes(y = Age, fill = Attrition)) +
+    geom_boxplot() +
+    ggtitle(&quot;Sales Representatives Age Range&quot;) +
+    xlab(&quot;Attrition&quot;) +
+    ylab(&quot;Age&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-10.png" width="672" /></p>
+<pre class="r"><code>case_df_trim %&gt;%
+    filter(JobRole == &quot;SalesRepresentative&quot;) %&gt;%
+    ggplot(aes(y = MonthlyIncome, fill = Attrition)) +
+    geom_boxplot() +
+    ggtitle(&quot;Sales Representatives Age Range&quot;) +
+    xlab(&quot;Attrition&quot;) +
+    ylab(&quot;Monthly Income&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-11.png" width="672" /></p>
+<pre class="r"><code>## Years since last promotion
+case_df_trim %&gt;%
+    ggplot(aes(x = YearsSinceLastPromotion, fill = Attrition)) +
+    geom_histogram() +
+    ggtitle(&quot;Years Since Last Promotion Distribution&quot;) +
+    xlab(&quot;Years Since Last Promotion&quot;) +
+    ylab(&quot;Count&quot;) +
+    theme_minimal()</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-12.png" width="672" /></p>
+<pre class="r"><code>case_df_trim %&gt;%
+    mutate(promotion_group =
+        case_when(
+            YearsSinceLastPromotion &lt; 1 ~ &quot;&lt;1&quot;,
+            YearsSinceLastPromotion &gt;= 1 &amp; YearsSinceLastPromotion &lt; 5 ~ &quot;1-4&quot;,
+            YearsSinceLastPromotion &gt;= 5 &amp; YearsSinceLastPromotion &lt; 10 ~ &quot;5-9&quot;,
+            YearsSinceLastPromotion &gt;= 10 &amp;
+                YearsSinceLastPromotion &lt; 15 ~ &quot;10-14&quot;,
+            YearsSinceLastPromotion &gt;= 15 ~ &quot;&gt;15&quot;
+        ),
+        promotion_group =
+            factor(promotion_group,
+                level = c(
+                    &quot;&lt;1&quot;,
+                    &quot;1-4&quot;,
+                    &quot;5-9&quot;,
+                    &quot;10-14&quot;,
+                    &quot;&gt;15&quot;
+                )
+            )
+    ) %&gt;%
+    group_by(promotion_group, Attrition) %&gt;%
+    summarise(count = n()) %&gt;%
+    pivot_wider(names_from = Attrition, values_from = count) %&gt;%
+    mutate(attr_rate = round(Yes / (No + Yes), 2))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;promotion_group&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 5 x 4
+## # Groups:   promotion_group [5]
+##   promotion_group    No   Yes attr_rate
+##   &lt;fct&gt;           &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;
+## 1 &lt;1                279    63      0.18
+## 2 1-4               319    53      0.14
+## 3 5-9                98    17      0.15
+## 4 10-14              29     4      0.12
+## 5 &gt;15                 5     3      0.38</code></pre>
+<pre class="r"><code>## Marital Status
+case_df_trim %&gt;%
+    ggplot(aes(x = MaritalStatus, fill = Attrition)) +
+    geom_bar() +
+    ggtitle(&quot;Attrition by Marital Status&quot;) +
+    xlab(&quot;Marital Status&quot;) +
+    ylab(&quot;Count&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-13.png" width="672" /></p>
+<pre class="r"><code>case_df_trim %&gt;%
+    group_by(MaritalStatus, Attrition) %&gt;%
+    summarise(count = n()) %&gt;%
+    pivot_wider(names_from = Attrition, values_from = count) %&gt;%
+    mutate(attr_rate = round(Yes / (No + Yes), 2)) %&gt;%
+    arrange(desc(attr_rate))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;MaritalStatus&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 3 x 4
+## # Groups:   MaritalStatus [3]
+##   MaritalStatus    No   Yes attr_rate
+##   &lt;chr&gt;         &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;
+## 1 Single          199    70      0.26
+## 2 Married         352    58      0.14
+## 3 Divorced        179    12      0.06</code></pre>
+<pre class="r"><code>case_df_trim %&gt;%
+    ggplot(aes(x = MaritalStatus, y = Age, fill = OverTime)) +
+    geom_boxplot() +
+    ggtitle(&quot;Attrition by Marital Status&quot;) +
+    xlab(&quot;Marital Status&quot;) +
+    ylab(&quot;Count&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-14.png" width="672" /></p>
+<pre class="r"><code>case_df_trim %&gt;%
+    ggplot(aes(x = JobRole, y = MaritalStatus, fill = MaritalStatus)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    ggtitle(&quot;Attrition by Marital Status and Job Role&quot;) +
+    xlab(&quot;Job Role&quot;) +
+    ylab(&quot;Count&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-15.png" width="672" /></p>
+<pre class="r"><code># Monthly Income
+## Linear Regression
+### Remove columns with collinearity to Monthly Income
+income_df &lt;-
+    subset(dummy_df,
+        select = -c(income_dif_role, income_dif_level)
+    )
+
+income_lm_model &lt;- lm(MonthlyIncome ~ ., income_df)
+
+pvalue_df &lt;- rownames_to_column(as.data.frame(summary(income_lm_model)$coefficients[, 4])) #nolint
+colnames(pvalue_df) &lt;- c(&quot;column_name&quot;, &quot;p_value&quot;)
+
+### Top Dependant Variables p-values
+pvalue_df %&gt;%
+    filter(pvalue_df$column_name != &quot;(Intercept)&quot; &amp; .05 - p_value &gt; 0) %&gt;%
+    ggplot(aes(x = reorder(column_name, p_value), y = p_value)) +
+    geom_bar(stat = &quot;identity&quot;, fill = &quot;#00002c&quot;) +
+    ggtitle(&quot;Top Dependant Variable P-Values&quot;) +
+    xlab(&quot;Variable&quot;) +
+    ylab(&quot;P-Value&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-16.png" width="672" /></p>
+<pre class="r"><code>top_income_pval &lt;- pvalue_df %&gt;%
+    filter(pvalue_df$column_name != &quot;(Intercept)&quot; &amp; .05 - p_value &gt; 0) %&gt;%
+    arrange(p_value)
+top_income_pval</code></pre>
+<pre><code>##                column_name       p_value
+## 1                 JobLevel 3.989508e-155
+## 2          JobRole_Manager  1.523787e-29
+## 3 JobRole_ResearchDirector  6.878372e-19
+## 4        TotalWorkingYears  3.660867e-06
+## 5 BusinessTravel_NonTravel  1.734943e-03
+## 6   JobRole_SalesExecutive  2.358397e-02
+## 7        PerformanceRating  4.493600e-02
+## 8  YearsSinceLastPromotion  4.723235e-02</code></pre>
+<pre class="r"><code>best_pvalue_df &lt;-
+    pvalue_df %&gt;%
+    filter(pvalue_df$column_name != &quot;(Intercept)&quot; &amp; .05 - p_value &gt; 0) %&gt;%
+    select(column_name)
+
+# Individual charts
+case_df_trim %&gt;%
+    select(MonthlyIncome, Attrition, JobLevel, JobRole, BusinessTravel) %&gt;%
+    ggpairs(aes(fill = Attrition))</code></pre>
+<pre><code>## 
+ plot: [1,1] [===&gt;----------------------------------------------------------------------------------------------]  4% est: 0s 
+ plot: [1,2] [=======&gt;------------------------------------------------------------------------------------------]  8% est: 1s 
+ plot: [1,3] [===========&gt;--------------------------------------------------------------------------------------] 12% est: 1s 
+ plot: [1,4] [===============&gt;----------------------------------------------------------------------------------] 16% est: 1s 
+ plot: [1,5] [===================&gt;------------------------------------------------------------------------------] 20% est: 1s 
+ plot: [2,1] [=======================&gt;--------------------------------------------------------------------------] 24% est: 1s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [2,2] [==========================&gt;-----------------------------------------------------------------------] 28% est: 1s 
+ plot: [2,3] [==============================&gt;-------------------------------------------------------------------] 32% est: 1s 
+ plot: [2,4] [==================================&gt;---------------------------------------------------------------] 36% est: 1s 
+ plot: [2,5] [======================================&gt;-----------------------------------------------------------] 40% est: 1s 
+ plot: [3,1] [==========================================&gt;-------------------------------------------------------] 44% est: 1s 
+ plot: [3,2] [==============================================&gt;---------------------------------------------------] 48% est: 1s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [3,3] [==================================================&gt;-----------------------------------------------] 52% est: 1s 
+ plot: [3,4] [======================================================&gt;-------------------------------------------] 56% est: 1s 
+ plot: [3,5] [==========================================================&gt;---------------------------------------] 60% est: 1s 
+ plot: [4,1] [==============================================================&gt;-----------------------------------] 64% est: 1s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [4,2] [==================================================================&gt;-------------------------------] 68% est: 1s 
+ plot: [4,3] [======================================================================&gt;---------------------------] 72% est: 1s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [4,4] [=========================================================================&gt;------------------------] 76% est: 1s 
+ plot: [4,5] [=============================================================================&gt;--------------------] 80% est: 1s 
+ plot: [5,1] [=================================================================================&gt;----------------] 84% est: 0s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [5,2] [=====================================================================================&gt;------------] 88% est: 0s 
+ plot: [5,3] [=========================================================================================&gt;--------] 92% est: 0s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [5,4] [=============================================================================================&gt;----] 96% est: 0s 
+ plot: [5,5] [==================================================================================================]100% est: 0s 
+                                                                                                                              </code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-17.png" width="672" /></p>
+<pre class="r"><code>## Higher potential for earning when you travel some.
+## Those who don&#39;t get paid well and have to travel leave.
+
+## Job Role
+case_df_trim %&gt;%
+    ggplot(aes(x = JobRole, y = MonthlyIncome, fill = JobRole)) +
+    geom_boxplot() +
+    ggtitle(&quot;Job Role and Monthly Income&quot;) +
+    xlab(&quot;Job Role&quot;) +
+    ylab(&quot;Monthly Income&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-18.png" width="672" /></p>
+<pre class="r"><code>case_df_trim %&gt;%
+    ggplot(aes(x = JobRole, y = MonthlyIncome, fill = Attrition)) +
+    geom_boxplot() +
+    ggtitle(&quot;Attrition by Job Role and Monthly Income&quot;) +
+    xlab(&quot;Job Role&quot;) +
+    ylab(&quot;Monthly Income&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-19.png" width="672" /></p>
+<pre class="r"><code>## Job Level
+case_df_trim %&gt;%
+    ggplot(aes(x = as.factor(JobLevel), y = MonthlyIncome, fill = JobLevel)) +
+    geom_boxplot() +
+    ggtitle(&quot;Job Level and Monthly Income&quot;) +
+    xlab(&quot;Job Level&quot;) +
+    ylab(&quot;Monthly Income&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-20.png" width="672" /></p>
+<pre class="r"><code>## Business Travel
+case_df_trim %&gt;%
+    ggplot(aes(x = as.factor(BusinessTravel),
+        y = MonthlyIncome, fill = BusinessTravel)) +
+    geom_boxplot() +
+    ggtitle(&quot;Business Travel and Monthly Income&quot;) +
+    xlab(&quot;Business Travel&quot;) +
+    ylab(&quot;Monthly Income&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-21.png" width="672" /></p>
+<pre class="r"><code>## OverTime vs. Monthly Income
+attr_pvalue_df %&gt;%
+    filter(attr_pvalue_df$column_name != &quot;(Intercept)&quot;) %&gt;%
+    arrange(p_value)</code></pre>
+<pre><code>##                         column_name      p_value
+## 1                      OverTime_Yes 1.742932e-16
+## 2                    JobInvolvement 5.168935e-08
+## 3                               Age 5.975706e-06
+## 4                  StockOptionLevel 7.983208e-06
+## 5           YearsSinceLastPromotion 2.473565e-05
+## 6    Department_ResearchDevelopment 3.484748e-05
+## 7                          JobLevel 2.700889e-04
+## 8                   JobSatisfaction 4.858480e-04
+## 9                NumCompaniesWorked 9.703351e-04
+## 10            MaritalStatus_Married 2.981981e-03
+## 11           MaritalStatus_Divorced 4.868451e-03
+## 12                  income_dif_role 7.393304e-03
+## 13                 income_dif_level 8.861907e-03
+## 14         BusinessTravel_NonTravel 9.041888e-03
+## 15                 DistanceFromHome 9.826588e-03
+## 16  BusinessTravel_TravelFrequently 1.835233e-02
+## 17               YearsInCurrentRole 1.908253e-02
+## 18          EnvironmentSatisfaction 2.091597e-02
+## 19                  WorkLifeBalance 2.184273e-02
+## 20                TotalWorkingYears 2.197757e-02
+## 21            TrainingTimesLastYear 2.393120e-02
+## 22             YearsWithCurrManager 4.460925e-02
+## 23 JobRole_HealthcareRepresentative 1.101557e-01
+## 24         RelationshipSatisfaction 1.507723e-01
+## 25     JobRole_LaboratoryTechnician 1.691816e-01
+## 26                       HourlyRate 2.178581e-01
+## 27                  JobRole_Manager 2.204291e-01
+## 28    JobRole_ManufacturingDirector 2.287647e-01
+## 29    EducationField_HumanResources 2.495790e-01
+## 30        JobRole_ResearchScientist 2.862304e-01
+## 31                        DailyRate 3.550930e-01
+## 32           EducationField_Medical 3.860137e-01
+## 33      EducationField_LifeSciences 4.724719e-01
+## 34                   YearsAtCompany 4.997180e-01
+## 35                      MonthlyRate 5.256393e-01
+## 36                    Gender_Female 5.364352e-01
+## 37           JobRole_HumanResources 5.898537e-01
+## 38                        Education 6.140611e-01
+## 39         JobRole_ResearchDirector 7.633826e-01
+## 40        Department_HumanResources 7.707070e-01
+## 41             EducationField_Other 8.209263e-01
+## 42                PercentSalaryHike 9.025008e-01
+## 43         EducationField_Marketing 9.072382e-01
+## 44                PerformanceRating 9.698064e-01
+## 45                    MonthlyIncome 9.971451e-01
+## 46                             NULL           NA
+## 47      BusinessTravel_TravelRarely           NA
+## 48                 Department_Sales           NA
+## 49   EducationField_TechnicalDegree           NA
+## 50                      Gender_Male           NA
+## 51           JobRole_SalesExecutive           NA
+## 52      JobRole_SalesRepresentative           NA
+## 53             MaritalStatus_Single           NA</code></pre>
+<pre class="r"><code>pvalue_df %&gt;%
+    filter(pvalue_df$column_name != &quot;(Intercept)&quot;) %&gt;%
+    arrange(p_value)</code></pre>
+<pre><code>##                         column_name       p_value
+## 1                          JobLevel 3.989508e-155
+## 2                   JobRole_Manager  1.523787e-29
+## 3          JobRole_ResearchDirector  6.878372e-19
+## 4                 TotalWorkingYears  3.660867e-06
+## 5          BusinessTravel_NonTravel  1.734943e-03
+## 6            JobRole_SalesExecutive  2.358397e-02
+## 7                 PerformanceRating  4.493600e-02
+## 8           YearsSinceLastPromotion  4.723235e-02
+## 9   BusinessTravel_TravelFrequently  6.157761e-02
+## 10     JobRole_LaboratoryTechnician  6.661165e-02
+## 11                      MonthlyRate  7.293873e-02
+## 12   Department_ResearchDevelopment  8.623588e-02
+## 13                PercentSalaryHike  1.118716e-01
+## 14                        DailyRate  1.131166e-01
+## 15             YearsWithCurrManager  1.234102e-01
+## 16                    Gender_Female  1.360632e-01
+## 17                 DistanceFromHome  1.429030e-01
+## 18        JobRole_ResearchScientist  2.485023e-01
+## 19        Department_HumanResources  3.588284e-01
+## 20                        Education  3.639767e-01
+## 21                  JobSatisfaction  4.128763e-01
+## 22            TrainingTimesLastYear  4.157435e-01
+## 23                    Attrition_Yes  4.757328e-01
+## 24                  WorkLifeBalance  4.844083e-01
+## 25           JobRole_HumanResources  5.796827e-01
+## 26            MaritalStatus_Married  6.169284e-01
+## 27         RelationshipSatisfaction  6.266518e-01
+## 28           EducationField_Medical  6.448541e-01
+## 29                   YearsAtCompany  7.298971e-01
+## 30                   JobInvolvement  7.345031e-01
+## 31               YearsInCurrentRole  7.411108e-01
+## 32      EducationField_LifeSciences  7.473641e-01
+## 33               NumCompaniesWorked  7.716430e-01
+## 34                              Age  8.004936e-01
+## 35    JobRole_ManufacturingDirector  8.118130e-01
+## 36    EducationField_HumanResources  8.247614e-01
+## 37                       HourlyRate  8.347791e-01
+## 38 JobRole_HealthcareRepresentative  8.360516e-01
+## 39                     OverTime_Yes  8.557723e-01
+## 40          EnvironmentSatisfaction  8.927133e-01
+## 41           MaritalStatus_Divorced  9.107199e-01
+## 42         EducationField_Marketing  9.171749e-01
+## 43                 StockOptionLevel  9.431565e-01
+## 44             EducationField_Other  9.611111e-01</code></pre>
+<pre class="r"><code>## Overtime Monthly Income
+case_df_trim %&gt;%
+    ggplot(aes(x = OverTime,
+        y = MonthlyIncome, fill = OverTime)) +
+    geom_boxplot() +
+    ggtitle(&quot;Over Time and Monthly Income&quot;) +
+    xlab(&quot;Over Time&quot;) +
+    ylab(&quot;Monthly Income&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-22.png" width="672" /></p>
+<pre class="r"><code>case_df_trim %&gt;%
+    ggplot(aes(x = JobRole, fill = OverTime)) +
+    geom_bar() +
+    ggtitle(&quot;Over Time and Monthly Income&quot;) +
+    xlab(&quot;Over Time&quot;) +
+    ylab(&quot;Monthly Income&quot;) +
+    theme_minimal()</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-3-23.png" width="672" /></p>
+</div>
+<div id="attrition-models" class="section level1">
+<h1>Attrition Models</h1>
+<div id="linear-regression" class="section level2">
+<h2>Linear Regression</h2>
+<pre class="r"><code># Create data frame with best variables
+best_case_df_att &lt;-
+    subset(dummy_df,
+        select = c(top_attr_pval$column_name, &quot;Attrition_Yes&quot;))
+
+# Linear Regression Model Test
+index_lr_att &lt;-
+    sample(seq(1, dim(best_case_df_att)[1], 1), .7 * dim(best_case_df_att)[1])
+train_lr_att &lt;- best_case_df_att[index_lr_att, ]
+test_lr_att &lt;- best_case_df_att[-index_lr_att, ]
+
+attr_lr &lt;- lm(Attrition_Yes ~ ., train_lr_att)
+
+p_linear_attr &lt;- predict(attr_lr, test_lr_att, type = &quot;response&quot;)
+
+p_linear_attr &lt;- ifelse(p_linear_attr &gt; 0.5, 1, 0)
+
+confusionMatrix(table(p_linear_attr, test_lr_att$Attrition_Yes))</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##              
+## p_linear_attr   0   1
+##             0 219  26
+##             1   1  15
+##                                           
+##                Accuracy : 0.8966          
+##                  95% CI : (0.8531, 0.9307)
+##     No Information Rate : 0.8429          
+##     P-Value [Acc &gt; NIR] : 0.008279        
+##                                           
+##                   Kappa : 0.4805          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 3.86e-06        
+##                                           
+##             Sensitivity : 0.9955          
+##             Specificity : 0.3659          
+##          Pos Pred Value : 0.8939          
+##          Neg Pred Value : 0.9375          
+##              Prevalence : 0.8429          
+##          Detection Rate : 0.8391          
+##    Detection Prevalence : 0.9387          
+##       Balanced Accuracy : 0.6807          
+##                                           
+##        &#39;Positive&#39; Class : 0               
+## </code></pre>
+</div>
+<div id="logistical-regression" class="section level2">
+<h2>Logistical Regression</h2>
+<pre class="r"><code># Logistical Regression Model Test
+index_lr &lt;- sample(seq(1, dim(attrition_df)[1], 1),
+     .7 * dim(attrition_df)[1])
+train_lr &lt;- attrition_df[index_lr, ]
+test_lr &lt;- attrition_df[-index_lr, ]
+
+log_reg_att &lt;- glm(Attrition_Yes ~ ., data = train_lr, family = &quot;binomial&quot;)
+anova(log_reg_att, test = &quot;Chisq&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model: binomial, link: logit
+## 
+## Response: Attrition_Yes
+## 
+## Terms added sequentially (first to last)
+## 
+## 
+##                                  Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+## NULL                                               608     534.06              
+## Age                               1   12.852       607     521.20 0.0003372 ***
+## DailyRate                         1    0.883       606     520.32 0.3474109    
+## DistanceFromHome                  1    6.195       605     514.13 0.0128114 *  
+## Education                         1    1.026       604     513.10 0.3111145    
+## EnvironmentSatisfaction           1    4.755       603     508.35 0.0292052 *  
+## HourlyRate                        1    0.434       602     507.91 0.5100926    
+## JobInvolvement                    1   23.452       601     484.46 1.281e-06 ***
+## JobLevel                          1   14.061       600     470.40 0.0001770 ***
+## JobSatisfaction                   1    8.831       599     461.57 0.0029618 ** 
+## MonthlyIncome                     1    0.073       598     461.50 0.7877159    
+## MonthlyRate                       1    0.914       597     460.58 0.3390062    
+## NumCompaniesWorked                1    4.320       596     456.26 0.0376676 *  
+## PercentSalaryHike                 1    0.154       595     456.11 0.6951346    
+## PerformanceRating                 1    0.059       594     456.05 0.8087744    
+## RelationshipSatisfaction          1    3.664       593     452.39 0.0556155 .  
+## StockOptionLevel                  1   13.252       592     439.13 0.0002723 ***
+## TotalWorkingYears                 1    2.869       591     436.26 0.0903171 .  
+## TrainingTimesLastYear             1    5.784       590     430.48 0.0161704 *  
+## WorkLifeBalance                   1    1.777       589     428.70 0.1825703    
+## YearsAtCompany                    1    0.078       588     428.63 0.7801846    
+## YearsInCurrentRole                1    0.099       587     428.53 0.7524570    
+## YearsSinceLastPromotion           1   15.367       586     413.16 8.854e-05 ***
+## YearsWithCurrManager              1    1.177       585     411.98 0.2780357    
+## income_dif_role                   1    8.058       584     403.93 0.0045302 ** 
+## income_dif_level                  1    5.505       583     398.42 0.0189629 *  
+## BusinessTravel_NonTravel          1    7.853       582     390.57 0.0050723 ** 
+## BusinessTravel_TravelFrequently   1    4.266       581     386.30 0.0388792 *  
+## BusinessTravel_TravelRarely       0    0.000       581     386.30              
+## Department_HumanResources         1    0.616       580     385.68 0.4324820    
+## Department_ResearchDevelopment    1   13.200       579     372.49 0.0002800 ***
+## Department_Sales                  0    0.000       579     372.49              
+## EducationField_HumanResources     1    1.398       578     371.09 0.2370725    
+## EducationField_LifeSciences       1    0.019       577     371.07 0.8892403    
+## EducationField_Marketing          1    0.013       576     371.05 0.9094875    
+## EducationField_Medical            1    0.811       575     370.24 0.3678280    
+## EducationField_Other              1    0.317       574     369.93 0.5736319    
+## EducationField_TechnicalDegree    0    0.000       574     369.93              
+## Gender_Female                     1    0.433       573     369.49 0.5104667    
+## Gender_Male                       0    0.000       573     369.49              
+## JobRole_HealthcareRepresentative  1    4.383       572     365.11 0.0363039 *  
+## JobRole_HumanResources            1    0.084       571     365.03 0.7714485    
+## JobRole_LaboratoryTechnician      1    0.877       570     364.15 0.3491173    
+## JobRole_Manager                   1    0.087       569     364.06 0.7683197    
+## JobRole_ManufacturingDirector     1    1.306       568     362.76 0.2532096    
+## JobRole_ResearchDirector          1    0.123       567     362.64 0.7259213    
+## JobRole_ResearchScientist         1    0.391       566     362.24 0.5316730    
+## JobRole_SalesExecutive            0    0.000       566     362.24              
+## JobRole_SalesRepresentative       0    0.000       566     362.24              
+## MaritalStatus_Divorced            1    7.730       565     354.51 0.0054296 ** 
+## MaritalStatus_Married             1   17.542       564     336.97 2.810e-05 ***
+## MaritalStatus_Single              0    0.000       564     336.97              
+## OverTime_Yes                      1   46.462       563     290.51 9.341e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>p_lr_attr &lt;-
+    predict(log_reg_att,
+        newdata = test_lr,
+        type = &quot;response&quot;
+    )</code></pre>
+<pre><code>## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type == : prediction from a rank-deficient fit may be
+## misleading</code></pre>
+<pre class="r"><code># Converting probability to binomial response
+p_lr_attr &lt;- ifelse(p_lr_attr &gt; 0.5, 1, 0)
+
+confusionMatrix(table(p_lr_attr, test_lr$Attrition_Yes))</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##          
+## p_lr_attr   0   1
+##         0 203  24
+##         1  15  19
+##                                           
+##                Accuracy : 0.8506          
+##                  95% CI : (0.8014, 0.8915)
+##     No Information Rate : 0.8352          
+##     P-Value [Acc &gt; NIR] : 0.2838          
+##                                           
+##                   Kappa : 0.4073          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 0.2002          
+##                                           
+##             Sensitivity : 0.9312          
+##             Specificity : 0.4419          
+##          Pos Pred Value : 0.8943          
+##          Neg Pred Value : 0.5588          
+##              Prevalence : 0.8352          
+##          Detection Rate : 0.7778          
+##    Detection Prevalence : 0.8697          
+##       Balanced Accuracy : 0.6865          
+##                                           
+##        &#39;Positive&#39; Class : 0               
+## </code></pre>
+</div>
+<div id="random-forest" class="section level2">
+<h2>Random Forest</h2>
+<pre class="r"><code>attrition_rf_df &lt;- dummy_df_attrition
+
+# Random Forest with all variables
+case_rf &lt;-
+    randomForest(
+        as.factor(Attrition) ~ .,
+        data = attrition_rf_df,
+        importance = TRUE,
+        proximity = TRUE,
+        ntree = 2000,
+        mtry = 2
+    )
+
+case_rf</code></pre>
+<pre><code>## 
+## Call:
+##  randomForest(formula = as.factor(Attrition) ~ ., data = attrition_rf_df,      importance = TRUE, proximity = TRUE, ntree = 2000, mtry = 2) 
+##                Type of random forest: classification
+##                      Number of trees: 2000
+## No. of variables tried at each split: 2
+## 
+##         OOB estimate of  error rate: 14.83%
+## Confusion matrix:
+##      No Yes class.error
+## No  730   0   0.0000000
+## Yes 129  11   0.9214286</code></pre>
+<pre class="r"><code>varImpPlot(case_rf, main = &quot;Variable Importance&quot;)</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code># Remove variables hurting the model
+case_study_trim &lt;-
+    subset(attrition_rf_df,
+        select = c(Attrition, OverTime_Yes, MonthlyIncome, StockOptionLevel,
+            JobLevel, Age, JobInvolvement, MaritalStatus_Single,
+            MaritalStatus_Divorced, YearsAtCompany, JobRole_SalesRepresentative
+        )
+    )
+str(case_study_trim)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    870 obs. of  11 variables:
+##  $ Attrition                  : chr  &quot;No&quot; &quot;No&quot; &quot;No&quot; &quot;No&quot; ...
+##  $ OverTime_Yes               : int  0 0 0 0 1 0 1 1 1 0 ...
+##  $ MonthlyIncome              : int  4403 19626 9362 10422 3760 8793 2127 6694 2220 5063 ...
+##  $ StockOptionLevel           : int  1 0 0 2 0 2 0 3 1 1 ...
+##  $ JobLevel                   : int  2 5 3 3 1 3 1 2 1 2 ...
+##  $ Age                        : int  32 40 35 32 24 27 41 37 34 34 ...
+##  $ JobInvolvement             : int  3 2 3 3 3 3 4 2 3 2 ...
+##  $ MaritalStatus_Single       : int  0 1 1 0 1 0 0 0 0 0 ...
+##  $ MaritalStatus_Divorced     : int  1 0 0 0 0 1 0 1 0 0 ...
+##  $ YearsAtCompany             : int  5 20 2 14 6 9 4 1 1 8 ...
+##  $ JobRole_SalesRepresentative: int  0 0 0 0 0 0 0 0 1 0 ...</code></pre>
+<pre class="r"><code># Random Forest model comparision to base
+case_rf_trim &lt;-
+    randomForest(
+        as.factor(Attrition) ~ .,
+        data = case_study_trim,
+        importance = TRUE,
+        proximity = TRUE,
+        ntree = 2000,
+        mtry = 2
+    )
+case_rf_trim</code></pre>
+<pre><code>## 
+## Call:
+##  randomForest(formula = as.factor(Attrition) ~ ., data = case_study_trim,      importance = TRUE, proximity = TRUE, ntree = 2000, mtry = 2) 
+##                Type of random forest: classification
+##                      Number of trees: 2000
+## No. of variables tried at each split: 2
+## 
+##         OOB estimate of  error rate: 14.02%
+## Confusion matrix:
+##      No Yes class.error
+## No  715  15  0.02054795
+## Yes 107  33  0.76428571</code></pre>
+<pre class="r"><code>varImpPlot(case_rf_trim, main = &quot;Variable Importance - Refined&quot;)</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code># Create data frame for each class
+no_df_trimed &lt;- case_study_trim %&gt;% filter(Attrition == &quot;No&quot;)
+yes_df_trimed &lt;- case_study_trim %&gt;% filter(Attrition == &quot;Yes&quot;)
+
+# Set index length based on class with the smallest data set
+# This will undersample the larger class dataset to match the other class sample
+no_len &lt;- dim(no_df_trimed)[1]
+yes_len &lt;- dim(yes_df_trimed)[1]
+index_len &lt;- min(no_len, yes_len)
+
+# Set index for both classes
+no_index &lt;- sample(seq(1, dim(no_df_trimed)[1], 1), .8 * index_len)
+yes_index &lt;- sample(seq(1, dim(yes_df_trimed)[1], 1), .8 * index_len)
+
+# Create train and test for both classes
+train_no &lt;- no_df_trimed[no_index, ]
+train_yes &lt;- yes_df_trimed[yes_index, ]
+
+test_no &lt;- no_df_trimed[-no_index, ]
+test_yes &lt;- yes_df_trimed[-yes_index, ]
+
+# Merge train and test class data frames back together
+train_df &lt;- rbind(train_no, train_yes)
+test_df &lt;- rbind(test_no, test_yes)
+
+# For loop to find best number of variables to sample
+iterations &lt;- 200
+num_mtry &lt;- dim(case_study_trim)[2]
+num_ntree &lt;- 1000
+
+master_acc &lt;- matrix(nrow = iterations, ncol = num_mtry)
+master_sens &lt;- matrix(nrow = iterations, ncol = num_mtry)
+master_spec &lt;- matrix(nrow = iterations, ncol = num_mtry)
+
+for (j in 1:iterations) {
+
+    for (i in 1:num_mtry) {
+        case_rf &lt;-
+        randomForest(
+            as.factor(Attrition) ~ .,
+            data = train_df,
+            importance = TRUE,
+            proximity = TRUE,
+            ntree = num_ntree,
+            mtry = i
+        )
+
+        rf_p_for &lt;- predict(case_rf, test_df)
+        cm_for &lt;- confusionMatrix(rf_p_for, as.factor(test_df$Attrition))
+
+        master_acc[j, i] &lt;- cm_for$overall[&quot;Accuracy&quot;]
+        master_sens[j, i] &lt;- cm_for$byClass[&quot;Sensitivity&quot;]
+        master_spec[j, i] &lt;- cm_for$byClass[&quot;Specificity&quot;]
+    }
+}</code></pre>
+<pre><code>## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range
+
+## Warning in randomForest.default(m, y, ...): invalid mtry: reset to within valid range</code></pre>
+<pre class="r"><code>master_acc_df &lt;- as.data.frame(colMeans(master_acc))
+master_sens_df &lt;- as.data.frame(colMeans(master_sens))
+master_spec_df &lt;- as.data.frame(colMeans(master_spec))
+colnames(master_acc_df) &lt;- c(&quot;mean_acc&quot;)
+colnames(master_sens_df) &lt;- c(&quot;mean_sens&quot;)
+colnames(master_spec_df) &lt;- c(&quot;mean_spec&quot;)
+
+# Best mtry value
+best_overall &lt;-
+    which.max(master_acc_df$mean_acc + master_sens_df$mean_sens +
+        master_spec_df$mean_spec)
+best_mtry_acc &lt;- which.max(master_acc_df$mean_acc)
+best_mtry_sens &lt;- which.max(master_sens_df$mean_sens)
+best_mtry_spec &lt;- which.max(master_spec_df$mean_spec)
+
+best_overall</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code>best_mtry_acc</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code>best_mtry_sens</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code>best_mtry_spec</code></pre>
+<pre><code>## [1] 6</code></pre>
+<pre class="r"><code># Best overall model
+best_overall_rf &lt;- randomForest(
+    as.factor(Attrition) ~ .,
+    data = train_df,
+    importance = TRUE,
+    proximity = TRUE,
+    ntree = num_ntree,
+    mtry = best_overall
+)
+varImpPlot(best_overall_rf, main = &quot;Overall - Variable Importance&quot;)</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-6-3.png" width="672" /></p>
+<pre class="r"><code>rf_p_overall &lt;- predict(best_overall_rf, test_df)
+cm_overall &lt;- confusionMatrix(rf_p_overall, as.factor(test_df$Attrition))
+cm_overall</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction  No Yes
+##        No  498  11
+##        Yes 120  17
+##                                           
+##                Accuracy : 0.7972          
+##                  95% CI : (0.7641, 0.8276)
+##     No Information Rate : 0.9567          
+##     P-Value [Acc &gt; NIR] : 1               
+##                                           
+##                   Kappa : 0.1445          
+##                                           
+##  Mcnemar&#39;s Test P-Value : &lt;2e-16          
+##                                           
+##             Sensitivity : 0.8058          
+##             Specificity : 0.6071          
+##          Pos Pred Value : 0.9784          
+##          Neg Pred Value : 0.1241          
+##              Prevalence : 0.9567          
+##          Detection Rate : 0.7709          
+##    Detection Prevalence : 0.7879          
+##       Balanced Accuracy : 0.7065          
+##                                           
+##        &#39;Positive&#39; Class : No              
+## </code></pre>
+<pre class="r"><code># Best accuracy model
+best_acc_rf &lt;- randomForest(
+    as.factor(Attrition) ~ .,
+    data = train_df,
+    importance = TRUE,
+    proximity = TRUE,
+    ntree = num_ntree,
+    mtry = best_mtry_acc
+)
+varImpPlot(best_acc_rf, main = &quot;Accuracy - Variable Importance&quot;)</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-6-4.png" width="672" /></p>
+<pre class="r"><code>rf_p_acc &lt;- predict(best_acc_rf, test_df)
+cm_acc &lt;- confusionMatrix(rf_p_acc, as.factor(test_df$Attrition))
+cm_acc</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction  No Yes
+##        No  498  13
+##        Yes 120  15
+##                                           
+##                Accuracy : 0.7941          
+##                  95% CI : (0.7609, 0.8247)
+##     No Information Rate : 0.9567          
+##     P-Value [Acc &gt; NIR] : 1               
+##                                           
+##                   Kappa : 0.1209          
+##                                           
+##  Mcnemar&#39;s Test P-Value : &lt;2e-16          
+##                                           
+##             Sensitivity : 0.8058          
+##             Specificity : 0.5357          
+##          Pos Pred Value : 0.9746          
+##          Neg Pred Value : 0.1111          
+##              Prevalence : 0.9567          
+##          Detection Rate : 0.7709          
+##    Detection Prevalence : 0.7910          
+##       Balanced Accuracy : 0.6708          
+##                                           
+##        &#39;Positive&#39; Class : No              
+## </code></pre>
+<pre class="r"><code># Best sensitivity model
+best_sens_rf &lt;- randomForest(
+    as.factor(Attrition) ~ .,
+    data = train_df,
+    importance = TRUE,
+    proximity = TRUE,
+    ntree = num_ntree,
+    mtry = best_mtry_sens
+)
+varImpPlot(best_sens_rf, main = &quot;Sensitivity - Variable Importance&quot;)</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-6-5.png" width="672" /></p>
+<pre class="r"><code>rf_p_sens &lt;- predict(best_sens_rf, test_df)
+cm_sens &lt;- confusionMatrix(rf_p_sens, as.factor(test_df$Attrition))
+cm_sens</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction  No Yes
+##        No  500  12
+##        Yes 118  16
+##                                          
+##                Accuracy : 0.7988         
+##                  95% CI : (0.7657, 0.829)
+##     No Information Rate : 0.9567         
+##     P-Value [Acc &gt; NIR] : 1              
+##                                          
+##                   Kappa : 0.1355         
+##                                          
+##  Mcnemar&#39;s Test P-Value : &lt;2e-16         
+##                                          
+##             Sensitivity : 0.8091         
+##             Specificity : 0.5714         
+##          Pos Pred Value : 0.9766         
+##          Neg Pred Value : 0.1194         
+##              Prevalence : 0.9567         
+##          Detection Rate : 0.7740         
+##    Detection Prevalence : 0.7926         
+##       Balanced Accuracy : 0.6902         
+##                                          
+##        &#39;Positive&#39; Class : No             
+## </code></pre>
+<pre class="r"><code># Best specificity model
+best_spec_rf &lt;- randomForest(
+    as.factor(Attrition) ~ .,
+    data = train_df,
+    importance = TRUE,
+    proximity = TRUE,
+    ntree = num_ntree,
+    mtry = best_mtry_spec
+)
+varImpPlot(best_spec_rf, main = &quot;Specificity - Variable Importance&quot;)</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-6-6.png" width="672" /></p>
+<pre class="r"><code>rf_p_spec &lt;- predict(best_spec_rf, test_df)
+cm_spec &lt;- confusionMatrix(rf_p_spec, as.factor(test_df$Attrition))
+cm_spec</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction  No Yes
+##        No  472  11
+##        Yes 146  17
+##                                          
+##                Accuracy : 0.757          
+##                  95% CI : (0.722, 0.7896)
+##     No Information Rate : 0.9567         
+##     P-Value [Acc &gt; NIR] : 1              
+##                                          
+##                   Kappa : 0.1123         
+##                                          
+##  Mcnemar&#39;s Test P-Value : &lt;2e-16         
+##                                          
+##             Sensitivity : 0.7638         
+##             Specificity : 0.6071         
+##          Pos Pred Value : 0.9772         
+##          Neg Pred Value : 0.1043         
+##              Prevalence : 0.9567         
+##          Detection Rate : 0.7307         
+##    Detection Prevalence : 0.7477         
+##       Balanced Accuracy : 0.6854         
+##                                          
+##        &#39;Positive&#39; Class : No             
+## </code></pre>
+</div>
+<div id="naive-bayes" class="section level2">
+<h2>Naive Bayes</h2>
+<pre class="r"><code># Naive Bayes all variables included
+## Set Naive Bayes Index
+nb_index &lt;- sample(seq(1, dim(case_study_df)[1], 1), .8 * dim(case_study_df)[1])
+
+## Create Naive Bayes train/test data sets
+nb_train &lt;- case_study_df[nb_index, ]
+nb_test &lt;- case_study_df[-nb_index, ]
+
+## Model
+nb_model &lt;- naiveBayes(Attrition ~ ., data = nb_train)
+nb_p &lt;- predict(nb_model, nb_test)
+confusionMatrix(nb_p, as.factor(nb_test$Attrition))</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction No Yes
+##        No  89  10
+##        Yes 47  28
+##                                           
+##                Accuracy : 0.6724          
+##                  95% CI : (0.5973, 0.7415)
+##     No Information Rate : 0.7816          
+##     P-Value [Acc &gt; NIR] : 0.9997          
+##                                           
+##                   Kappa : 0.2896          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 1.858e-06       
+##                                           
+##             Sensitivity : 0.6544          
+##             Specificity : 0.7368          
+##          Pos Pred Value : 0.8990          
+##          Neg Pred Value : 0.3733          
+##              Prevalence : 0.7816          
+##          Detection Rate : 0.5115          
+##    Detection Prevalence : 0.5690          
+##       Balanced Accuracy : 0.6956          
+##                                           
+##        &#39;Positive&#39; Class : No              
+## </code></pre>
+<pre class="r"><code># Naive Bayes low importance variables removed based on RF findings
+## Set Naive Bayes Index
+nb_index_trim &lt;-
+    sample(seq(1, dim(case_study_trim)[1], 1), .8 * dim(case_study_trim)[1])
+
+# Create Naive Bayes train/test data sets
+nb_train_trim &lt;- case_study_trim[nb_index_trim, ]
+nb_test_trim &lt;- case_study_trim[-nb_index_trim, ]
+
+## Model
+nb_model_trim &lt;- naiveBayes(Attrition ~ ., data = nb_train_trim)
+nb_p_trim &lt;- predict(nb_model, nb_test_trim)</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable &#39;ID&#39;. Did you
+## use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable &#39;DailyRate&#39;. Did
+## you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;DistanceFromHome&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable &#39;Education&#39;. Did
+## you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable &#39;EmployeeCount&#39;.
+## Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;EmployeeNumber&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;EnvironmentSatisfaction&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable &#39;HourlyRate&#39;.
+## Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;JobSatisfaction&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable &#39;MonthlyRate&#39;.
+## Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;NumCompaniesWorked&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;PercentSalaryHike&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;PerformanceRating&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;RelationshipSatisfaction&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable &#39;StandardHours&#39;.
+## Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;TotalWorkingYears&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;TrainingTimesLastYear&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;WorkLifeBalance&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;YearsInCurrentRole&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;YearsSinceLastPromotion&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;YearsWithCurrManager&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;mean_income_role&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;mean_income_level&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;income_dif_role&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(nb_model, nb_test_trim): Type mismatch between training and new data for variable
+## &#39;income_dif_level&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre class="r"><code>confusionMatrix(nb_p_trim, as.factor(nb_test_trim$Attrition))</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction  No Yes
+##        No  140  12
+##        Yes   8  14
+##                                           
+##                Accuracy : 0.8851          
+##                  95% CI : (0.8281, 0.9284)
+##     No Information Rate : 0.8506          
+##     P-Value [Acc &gt; NIR] : 0.1188          
+##                                           
+##                   Kappa : 0.5172          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 0.5023          
+##                                           
+##             Sensitivity : 0.9459          
+##             Specificity : 0.5385          
+##          Pos Pred Value : 0.9211          
+##          Neg Pred Value : 0.6364          
+##              Prevalence : 0.8506          
+##          Detection Rate : 0.8046          
+##    Detection Prevalence : 0.8736          
+##       Balanced Accuracy : 0.7422          
+##                                           
+##        &#39;Positive&#39; Class : No              
+## </code></pre>
+<pre class="r"><code># Naive Bayes top variables only
+## Model
+nb_model &lt;- naiveBayes(Attrition ~ OverTime + MonthlyIncome + StockOptionLevel +
+    Age + MaritalStatus + JobInvolvement + TotalWorkingYears, data = nb_train)
+nb_p &lt;- predict(nb_model, nb_test)
+confusionMatrix(nb_p, as.factor(nb_test$Attrition))</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction  No Yes
+##        No  123  19
+##        Yes  13  19
+##                                           
+##                Accuracy : 0.8161          
+##                  95% CI : (0.7504, 0.8707)
+##     No Information Rate : 0.7816          
+##     P-Value [Acc &gt; NIR] : 0.1563          
+##                                           
+##                   Kappa : 0.4288          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 0.3768          
+##                                           
+##             Sensitivity : 0.9044          
+##             Specificity : 0.5000          
+##          Pos Pred Value : 0.8662          
+##          Neg Pred Value : 0.5937          
+##              Prevalence : 0.7816          
+##          Detection Rate : 0.7069          
+##    Detection Prevalence : 0.8161          
+##       Balanced Accuracy : 0.7022          
+##                                           
+##        &#39;Positive&#39; Class : No              
+## </code></pre>
+</div>
+</div>
+<div id="monthly-income-models" class="section level1">
+<h1>Monthly Income Models</h1>
+<div id="linear-regression-1" class="section level2">
+<h2>Linear Regression</h2>
+<pre class="r"><code># Create data frame with best variables
+best_case_df &lt;-
+    subset(income_df, select = c(best_pvalue_df$column_name, &quot;MonthlyIncome&quot;))
+
+# Linear Regression Model Test
+index &lt;- sample(seq(1, dim(best_case_df)[1], 1), .7 * dim(best_case_df)[1])
+train &lt;- best_case_df[index, ]
+test &lt;- best_case_df[-index, ]
+
+income_lm &lt;- lm(MonthlyIncome ~ ., train)
+
+p_lm_income &lt;- predict(income_lm, test)
+
+plot(test$MonthlyIncome, p_lm_income - test$MonthlyIncome,
+    pch = 18,
+    main = &quot;Linear Regression - Monthly Income Residuals&quot;,
+    ylab = &quot;Residuals (Predicted - Observered)&quot;,
+    xlab = &quot;Observed Monthly Income&quot;, col = &quot;#15156285&quot;)
+abline(h = 0, col = &quot;#991d1d&quot;, lty = 2)</code></pre>
+<p><img src="Project2_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>mi_lm_rmse &lt;- RMSE(p_lm_income, test$MonthlyIncome)
+mi_lm_rmse</code></pre>
+<pre><code>## [1] 1102.876</code></pre>
+</div>
+</div>
+<div id="predictions" class="section level1">
+<h1>Predictions</h1>
+<pre class="r"><code># Attrition
+no_attrition &lt;- read.csv(&quot;C:/Users/corey/OneDrive/Documents/GitHub/DDS-Project-2/Data Sources/CaseStudy2CompSet No Attrition.csv&quot;, header = TRUE) # nolint
+
+## Mean Monthly Income by Job Role
+job_role_income_na &lt;-
+    no_attrition %&gt;%
+    group_by(JobRole) %&gt;%
+    summarise(mean_income_role = mean(MonthlyIncome))
+
+## Mean Monthly Income by Job Level
+job_level_income_na &lt;-
+    no_attrition %&gt;%
+    group_by(JobLevel) %&gt;%
+    summarise(mean_income_level = mean(MonthlyIncome))
+
+# Merge columns into main data frame
+no_attrition &lt;- left_join(no_attrition, job_role_income_na)</code></pre>
+<pre><code>## Joining, by = &quot;JobRole&quot;</code></pre>
+<pre class="r"><code>no_attrition &lt;- left_join(no_attrition, job_level_income_na)</code></pre>
+<pre><code>## Joining, by = &quot;JobLevel&quot;</code></pre>
+<pre class="r"><code>no_attrition &lt;-
+    no_attrition %&gt;%
+    mutate(income_dif_role = MonthlyIncome - mean_income_role,
+        income_dif_level = MonthlyIncome - mean_income_level,
+        JobRole = str_replace_all(JobRole, &quot;[^[:alnum:]]&quot;, &quot;&quot;),
+        Department = str_replace_all(Department, &quot;[^[:alnum:]]&quot;, &quot;&quot;),
+        EducationField = str_replace_all(EducationField, &quot;[^[:alnum:]]&quot;, &quot;&quot;),
+        BusinessTravel = str_replace_all(BusinessTravel, &quot;[^[:alnum:]]&quot;, &quot;&quot;)
+    )
+
+# Remove columns irrelevant to model or that have collinearity
+no_attrition_trim &lt;-
+    subset(no_attrition,
+        select = -c(
+            ID, Over18, EmployeeCount, EmployeeNumber,
+            StandardHours, mean_income_role, mean_income_level
+        )
+    )
+
+# Producing dummy columns for categorical variables
+dummy_df_na &lt;-
+    dummy_cols(
+        no_attrition_trim,
+        c(&quot;BusinessTravel&quot;, &quot;Department&quot;, &quot;EducationField&quot;,
+            &quot;Gender&quot;, &quot;JobRole&quot;, &quot;MaritalStatus&quot;, &quot;OverTime&quot;),
+        remove_selected_columns = TRUE
+    )
+# Removing No Option from Attrition and Overtime for multicollinearity
+dummy_df_na &lt;-
+    subset(dummy_df_na,
+        select = -c(OverTime_No)
+    )
+
+no_attrition_rf &lt;- randomForest(
+    as.factor(Attrition) ~ .,
+    data = case_study_trim,
+    importance = TRUE,
+    proximity = TRUE,
+    ntree = 2000,
+    mtry = 3
+)
+
+rf_p_acc &lt;- as.data.frame(predict(no_attrition_rf, dummy_df_na))
+colnames(rf_p_acc) &lt;- c(&quot;Attrition&quot;)
+
+# write.csv(rf_p_acc, &quot;Case2PredictionsAttrition.csv&quot;)
+
+# Monthly Income
+
+no_salary &lt;- read.csv(&quot;C:/Users/corey/OneDrive/Documents/GitHub/DDS-Project-2/Data Sources/CaseStudy2CompSet No Salary.csv&quot;, header = TRUE) # nolint
+
+
+# Create columns to calculate difference from mean and clean data
+no_salary &lt;-
+    no_salary %&gt;%
+    mutate(JobRole = str_replace_all(JobRole, &quot;[^[:alnum:]]&quot;, &quot;&quot;),
+        Department = str_replace_all(Department, &quot;[^[:alnum:]]&quot;, &quot;&quot;),
+        EducationField = str_replace_all(EducationField, &quot;[^[:alnum:]]&quot;, &quot;&quot;),
+        BusinessTravel = str_replace_all(BusinessTravel, &quot;[^[:alnum:]]&quot;, &quot;&quot;)
+    )
+
+# Producing dummy columns for categorical variables
+dummy_df_ns &lt;-
+    dummy_cols(
+        no_salary,
+        c(&quot;Attrition&quot;, &quot;BusinessTravel&quot;, &quot;Department&quot;, &quot;EducationField&quot;,
+            &quot;Gender&quot;, &quot;JobRole&quot;, &quot;MaritalStatus&quot;, &quot;OverTime&quot;),
+        remove_selected_columns = TRUE
+    )
+# Removing No Option from Attrition and Overtime for multicollinearity
+dummy_df_ns &lt;-
+    subset(dummy_df_ns,
+        select = -c(Attrition_No, OverTime_No)
+    )
+
+
+# Create data frame with best variables
+best_case_df_ns &lt;-
+    subset(income_df, select = c(best_pvalue_df$column_name, &quot;MonthlyIncome&quot;))
+
+
+income_lm_ns &lt;- lm(MonthlyIncome ~ ., best_case_df_ns)
+
+p_lm_income_ns &lt;- as.data.frame(predict(income_lm_ns, dummy_df_ns))
+
+colnames(p_lm_income_ns) &lt;- c(&quot;MonthlyIncome&quot;)
+
+# write.csv(p_lm_income_ns, &quot;Case2PredictionsMonthlyIncome.csv&quot;)</code></pre>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

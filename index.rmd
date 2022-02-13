@@ -13,6 +13,3 @@ I enjoy disc golf, cooking, playing video games, and drinking new whiskey/beers.
 
 # Directions
 The other tabs represent work/analyses that I have completed during my time at SMU. Please check them out!
-
-In addition to the Beer Analysis rmd, a streamlined Shiny App is available at
-https://cdholmes.shinyapps.io/shiny_app/?_ga=2.257393096.2128050319.1642435086-2098894638.1642435086
